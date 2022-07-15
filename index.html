@@ -1,3 +1,52 @@
 <body background="https://thumbs.gfycat.com/CircularCriminalGoshawk-size_restricted.gif">
 <center><h1>YAKINDA!</h1></center>
+<div class="countDownParent">Birinci tarih: <span data-date="2020/07/22 17:15:30" class="countDownElement"></span></div>
+		<div class="countDownParent">İkinci tarih: <span data-date="2020/09/21 18:35:40" class="countDownElement"></span></div>
+		<div class="countDownParent">Üçüncü tarih: <span data-date="2020/12/20 19:25:55" class="countDownElement"></span></div>
+
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script>
+			/*
+				Javascript ile ileri tarihli bir değere sahip elemanlara 'countDownOpen', 
+				tarihi geçmiş değere sahip elemanlara ise 'countDownClose' sinifi eklenir.
+				'countDownOpen' sinifina sahip elemanlarda sayaç aktiftir.'countDownClose' sinifina sahip elemanlara herhangi bir islem yapilmaz
+				cunku tarihleri gecmistir. Sayfada 'countDownOpen' isimli sinifa sahip eleman yoksa sayaç proğramı pasif hale getirilir 
+				yani 'setInterval' fonksiyonu silinir.
+			*/
+			var dayText	= "Gün";
+			var hourText	= "Saat";
+			var minuteText	= "Dakika";
+			var secondText	= "Saniye";
+			var x = setInterval(function(){ //sayacı belirli aralıklarla yenile
+				if ($(".countDownClose").length == $(".countDownElement").length){ /*butun tarihler gecmis zamanli ise*/
+					clearInterval(x); 
+					alert("İleri zamana ait bir tarih olmadığından dolayı bütün sayaçlar aktif değildir"); 
+				}
+				
+				$(".countDownElement").each(function(){ //countDownElement class ismine sahip elemanları teker teker dön
+					var thisElement = $(this); //elemanı elde et ve thisElement değişkenine ata. Bu değişken üzerinden elemana işlem yapılabilecek
+					if (!$(thisElement).hasClass("countDownClose")){ //ilgili element 'countDownClose' isimli sinifa sahip degilse asagidaki kodlar calissin
+						//thisElement.data("date") ile html elemanindaki 'data-date' ozelliginde tanimli tarihi elde ediyoruz. Bu tarih uzerinden islem yapiyoruz.
+						var countDownDate = new Date(thisElement.data("date")).getTime(); //geri sayılacak ileri zamanki bir tarihi milisaniye cinsinden elde ediyoruz
+						var now = new Date().getTime(); //şimdiki zamanı al
+						var distance = countDownDate - now; //geri sayılacak tarih ile şimdiki tarih arasındaki zaman farkını al
+						if (distance < 0) { //zaman farkı yok ise belirtilen zamanı geçti
+							$(thisElement).html("Geri sayım yapılacak ileri bir tarih yoktur").removeClass("countDownOpen").addClass("countDownClose"); //
+						}else { //zaman farkı var ise
+							//aradaki zaman farkını gün,saat,dakika,saniye olarak böl
+							var days = Math.floor(distance / (1000 * 60 * 60 * 24)),
+								hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+								minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+								seconds = Math.floor((distance % (1000 * 60)) / 1000),
+								days = (days?'<span>'+(days +' '+ dayText)+'</span>':''), //gun varsa gun degerini yaz
+								hours = (hours?'<span>'+(hours +' '+ hourText)+'</span>':''), //saat varsa saat degerini yaz
+								minutes = (minutes?'<span>'+(minutes +' '+ minuteText)+'</span>':''), //dakika varsa dakika degerini yaz
+								seconds = (seconds?'<span>'+(seconds +' '+ secondText)+'</span>':''); //saniye varsa saniye degerini yaz
+							thisElement.html(days +' '+ hours +' '+ minutes +' '+ seconds); //yazdır
+						}
+					}
+				});
+			}, 1000); //1 saniyede bir sayaç güncellenecek
+
+		</script>
 </body>
