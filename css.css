@@ -12,5 +12,5 @@
   transition: 600ms ease
                                     }
   &:hover {
-    background-position: 100% 0 // We only move the background position
+    background-position: 100% 0
   }
