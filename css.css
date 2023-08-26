@@ -1,71 +1,25 @@
-@mixin dots($count) {
-  $text-shadow: ();
-  @for $i from 0 through $count {
-    $text-shadow: $text-shadow,
-                 (-.5+(random()) * 3) + em
-                 (-.5+(random()) * 3) + em
-                 7px
-                 hsla(random() * 360, 100%, 50%,.9);
-  }
-  text-shadow: $text-shadow;
-}
+.home
+  height: 100vh
+  display: flex
+  text-align: center
+  align-items: center
+  justify-content: center
 
-html {
-  font: 5vmin/1.3 Serif;
-  overflow: hidden;
-  background: #123;
-}
-
-body, head {
-  display: block;
-  font-size: 52px;
-  color: transparent;
-}
-
-head::before, head::after,
-body::before, body::after {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 3em;
-  height: 3em;
-  content: '.';
-  mix-blend-mode: screen;
-  animation: 44s -27s move infinite ease-in-out alternate;
-}
-
-
-body::before {
-  @include dots(40);
-  animation-duration: 44s;
-  animation-delay: -27s;
-}
-
-body::after {
-  @include dots(40);
-  animation-duration: 43s;
-  animation-delay: -32s;
-}
-
-head::before {
-  @include dots(40);
-  animation-duration: 42s;
-  animation-delay: -23s;
-}
-
-head::after {
-  @include dots(40);
-  animation-duration: 41s;
-  animation-delay: -19s;
-}
-
-
-@keyframes move {
-  from {
-    transform: rotate(0deg) scale(12) translateX(-20px);
-  }
-  to {
-    transform: rotate(360deg) scale(18) translateX(20px);
-  }
-  }
+// Gradient animation
+.home
+  // Background size that overflows the div allows us to
+  // hide a part of the gradient that we can later move into the
+  // viewport by doing a background-position movement
+  background-size: 200%
+  // Because our bg size is 200%, we can define 2 gradients -
+  // 1 - from #fe873c to #828dfe which is visible at the start
+  // 2 - from #828dfe to #6d58f3 that we can move into the viewport
+  background-image: linear-gradient(to bottom left, #196619 0%, #29a329 50%, #adebad 100%)
+  // We add a transition to smoothen our the effect
+  transition: 600ms ease
   
+  // On hover we just move the background position of the div
+  // to simulate the switching gradient into the viewport
+  // Try hovering the 
+  &:hover
+    background-position: 100% 0 // We only move the background position
