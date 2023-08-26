@@ -1,25 +1,16 @@
-.home
-  height: 100vh
-  display: flex
-  text-align: center
-  align-items: center
+.home {
+  height: 100vh;
+  display: flex;
+  text-align: center;
+  align-items: center;
   justify-content: center
+}
 
-// Gradient animation
-.home
-  // Background size that overflows the div allows us to
-  // hide a part of the gradient that we can later move into the
-  // viewport by doing a background-position movement
-  background-size: 200%
-  // Because our bg size is 200%, we can define 2 gradients -
-  // 1 - from #fe873c to #828dfe which is visible at the start
-  // 2 - from #828dfe to #6d58f3 that we can move into the viewport
-  background-image: linear-gradient(to bottom left, #196619 0%, #29a329 50%, #adebad 100%)
-  // We add a transition to smoothen our the effect
+.home {
+  background-size: 200%;
+  background-image: linear-gradient(to bottom left, #196619 0%, #29a329 50%, #adebad 100%);
   transition: 600ms ease
-  
-  // On hover we just move the background position of the div
-  // to simulate the switching gradient into the viewport
-  // Try hovering the 
-  &:hover
+                                    }
+  &:hover {
     background-position: 100% 0 // We only move the background position
+  }
