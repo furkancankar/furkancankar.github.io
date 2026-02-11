@@ -2,19 +2,51 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Kaçış Oyunu: Anime Kızı vs Yaratık</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yabuz ibodan kacıuo</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
-        #info {
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; touch-action: none; }
+        
+        /* Mobil Kontroller */
+        #controls {
             position: absolute;
-            top: 10px;
-            width: 100%;
-            text-align: center;
-            color: white;
+            bottom: 20px;
+            left: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 60px);
+            grid-template-rows: repeat(3, 60px);
+            gap: 10px;
             z-index: 100;
-            text-shadow: 1px 1px 2px black;
-            pointer-events: none;
         }
+        .btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            user-select: none;
+        }
+        #btn-run {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 0, 0, 0.3);
+            border: 3px solid red;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
         #gameover {
             display: none;
             position: absolute;
@@ -22,271 +54,142 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: red;
-            font-size: 50px;
-            font-weight: bold;
+            font-size: 30px;
             text-align: center;
-            background: rgba(0,0,0,0.8);
-            padding: 20px;
-            border: 2px solid red;
+            background: rgba(0,0,0,0.9);
+            padding: 30px;
+            border: 3px solid red;
             z-index: 200;
+            width: 80%;
         }
-        button {
-            font-size: 20px;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
+        button.retry { font-size: 20px; padding: 10px; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="info">
-        <h2>KAÇIŞ</h2>
-        <p>Yön Tuşları veya W,A,S,D ile Hareket Et / Shift ile Koş</p>
-        <p>Siyah yaratıktan kaç!</p>
+    <div id="controls">
+        <div></div><div class="btn" id="up">↑</div><div></div>
+        <div class="btn" id="left">←</div><div></div><div class="btn" id="right">→</div>
+        <div></div><div class="btn" id="down">↓</div><div></div>
     </div>
+    <div id="btn-run">KOŞ</div>
 
     <div id="gameover">
-        YAKALANDIN!<br>
-        <button onclick="location.reload()">Tekrar Dene</button>
+        SİKİLDİN!<br>
+        <button class="retry" onclick="location.reload()">TEKRAR DENE</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        // --- DEĞİŞKENLER ---
-        let scene, camera, renderer;
-        let player, enemy;
+        let scene, camera, renderer, player, enemy;
         let obstacles = [];
         let keys = { w: false, a: false, s: false, d: false, shift: false };
-        let playerSpeed = 0.5;
-        let enemySpeed = 0.35; // Yaratık oyuncudan biraz daha yavaş
+        let playerSpeed = 0.4;
+        let enemySpeed = 0.32;
         let isGameOver = false;
 
-        // --- BAŞLATMA ---
         function init() {
-            // Sahne ve Kamera
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x2a1a1a); // Koyu kırmızımsı hava (Nether havası)
-            scene.fog = new THREE.Fog(0x2a1a1a, 10, 60); // Sis efekti (korku atmosferi için)
+            scene.background = new THREE.Color(0x1a0a0a);
+            scene.fog = new THREE.Fog(0x1a0a0a, 5, 50);
 
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMap.enabled = true; // Gölgeleri aç
+            renderer.shadowMap.enabled = true;
             document.body.appendChild(renderer.domElement);
 
-            // --- IŞIKLAR ---
-            const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Genel loş ışık
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
             scene.add(ambientLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffaaaa, 0.8);
-            dirLight.position.set(20, 50, 20);
-            dirLight.castShadow = true;
-            scene.add(dirLight);
-
-            // --- OYUNCU (ANİME KIZI TEMSİLİ) ---
-            // Basit bir model: Gövde (okul forması mavisi) ve Baş
-            const playerGroup = new THREE.Group();
-
-            const bodyGeo = new THREE.CylinderGeometry(0.3, 0.3, 1.2, 32);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1a2a4a }); // Lacivert okul forması
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            // Oyuncu (Anime Kızı Temsili)
+            player = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 1.2), new THREE.MeshStandardMaterial({ color: 0x3344ff }));
             body.position.y = 0.6;
-            body.castShadow = true;
-
-            const headGeo = new THREE.SphereGeometry(0.35, 32, 32);
-            const headMat = new THREE.MeshStandardMaterial({ color: 0xffe0bd }); // Ten rengi
-            const head = new THREE.Mesh(headGeo, headMat);
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.35), new THREE.MeshStandardMaterial({ color: 0xffe0bd }));
             head.position.y = 1.35;
-            
-            // Saç (Siyah uzun saç)
-            const hairGeo = new THREE.SphereGeometry(0.38, 32, 32, 0, 6.3, 0, 1.5);
-            const hairMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
-            const hair = new THREE.Mesh(hairGeo, hairMat);
-            hair.position.y = 1.35;
-            hair.rotation.x = -0.2;
-
-            playerGroup.add(body);
-            playerGroup.add(head);
-            playerGroup.add(hair);
-
-            player = playerGroup;
+            player.add(body, head);
             scene.add(player);
 
-            // --- YARATIK (SİYAH CANAVAR) ---
-            // Fotoğraftaki gibi uzun, siyah, eğik duran bir yapı
-            const enemyGroup = new THREE.Group();
-            
-            const eBodyGeo = new THREE.BoxGeometry(0.6, 2.5, 0.6);
-            const eMat = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.1 }); // Simsiyah
-            const eBody = new THREE.Mesh(eBodyGeo, eMat);
-            eBody.position.y = 1.25;
-            eBody.rotation.x = 0.2; // Hafif öne eğik (saldırgan duruş)
-            eBody.castShadow = true;
-
-            // Kollar (Uzun siyah kollar)
-            const armGeo = new THREE.CylinderGeometry(0.1, 0.1, 2, 8);
-            const arm1 = new THREE.Mesh(armGeo, eMat);
-            arm1.position.set(0.5, 1.5, 0.5);
-            arm1.rotation.z = -0.5;
-            arm1.rotation.x = -0.5;
-            
-            const arm2 = new THREE.Mesh(armGeo, eMat);
-            arm2.position.set(-0.5, 1.5, 0.5);
-            arm2.rotation.z = 0.5;
-            arm2.rotation.x = -0.5;
-
-            enemyGroup.add(eBody);
-            enemyGroup.add(arm1);
-            enemyGroup.add(arm2);
-
-            enemy = enemyGroup;
-            enemy.position.set(0, 0, -15); // Oyuncunun arkasında başlasın
+            // Yaratık (Siyah Canavar) - 40 birim uzağa spawnlanıyor
+            enemy = new THREE.Mesh(new THREE.BoxGeometry(0.8, 3, 0.8), new THREE.MeshStandardMaterial({ color: 0x000000 }));
+            enemy.position.set(0, 1.5, -40); 
             scene.add(enemy);
 
-            // --- HARİTA (MINECRAFT BENZERİ IZGARA) ---
-            createMap();
+            // Harita Oluşturma
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshStandardMaterial({ color: 0x221111 }));
+            floor.rotation.x = -Math.PI / 2;
+            scene.add(floor);
 
-            // --- KONTROLLER ---
-            window.addEventListener('keydown', (e) => {
-                if (e.key === 'w' || e.key === 'ArrowUp') keys.w = true;
-                if (e.key === 'a' || e.key === 'ArrowLeft') keys.a = true;
-                if (e.key === 's' || e.key === 'ArrowDown') keys.s = true;
-                if (e.key === 'd' || e.key === 'ArrowRight') keys.d = true;
-                if (e.key === 'Shift') keys.shift = true;
-            });
+            const brickMat = new THREE.MeshStandardMaterial({ color: 0x662222 });
+            for (let i = 0; i < 150; i++) {
+                const p = new THREE.Mesh(new THREE.BoxGeometry(1.5, 6, 1.5), brickMat);
+                p.position.set(Math.random() * 100 - 50, 3, Math.random() * 100 - 50);
+                if (p.position.distanceTo(player.position) > 5) {
+                    scene.add(p);
+                    obstacles.push(p);
+                }
+            }
 
-            window.addEventListener('keyup', (e) => {
-                if (e.key === 'w' || e.key === 'ArrowUp') keys.w = false;
-                if (e.key === 'a' || e.key === 'ArrowLeft') keys.a = false;
-                if (e.key === 's' || e.key === 'ArrowDown') keys.s = false;
-                if (e.key === 'd' || e.key === 'ArrowRight') keys.d = false;
-                if (e.key === 'Shift') keys.shift = false;
-            });
+            // --- KONTROL ETKİLEŞİMLERİ ---
+            // Klavye
+            window.onkeydown = (e) => {
+                if(e.key=='w'||e.key=='ArrowUp') keys.w=true;
+                if(e.key=='s'||e.key=='ArrowDown') keys.s=true;
+                if(e.key=='a'||e.key=='ArrowLeft') keys.a=true;
+                if(e.key=='d'||e.key=='ArrowRight') keys.d=true;
+                if(e.shiftKey) keys.shift=true;
+            };
+            window.onkeyup = (e) => {
+                if(e.key=='w'||e.key=='ArrowUp') keys.w=false;
+                if(e.key=='s'||e.key=='ArrowDown') keys.s=false;
+                if(e.key=='a'||e.key=='ArrowLeft') keys.a=false;
+                if(e.key=='d'||e.key=='ArrowRight') keys.d=false;
+                if(!e.shiftKey) keys.shift=false;
+            };
 
-            // Pencere boyutu değişirse
-            window.addEventListener('resize', onWindowResize, false);
-            
+            // Mobil Dokunmatik (Touch)
+            const setupTouch = (id, key) => {
+                const el = document.getElementById(id);
+                el.ontouchstart = (e) => { e.preventDefault(); keys[key] = true; };
+                el.ontouchend = (e) => { e.preventDefault(); keys[key] = false; };
+            };
+            setupTouch('up', 'w'); setupTouch('down', 's');
+            setupTouch('left', 'a'); setupTouch('right', 'd');
+            setupTouch('btn-run', 'shift');
+
             animate();
         }
 
-        function createMap() {
-            // Zemin (Sonsuz hissi vermek için büyük zemin)
-            const floorGeo = new THREE.PlaneGeometry(200, 200);
-            const floorMat = new THREE.MeshStandardMaterial({ color: 0x330000 }); // Koyu kırmızı zemin
-            const floor = new THREE.Mesh(floorGeo, floorMat);
-            floor.rotation.x = -Math.PI / 2;
-            floor.receiveShadow = true;
-            scene.add(floor);
-
-            // Izgara Yapı (Fotoğraftaki gibi tuğla yollar/kirişler)
-            const brickMat = new THREE.MeshStandardMaterial({ color: 0x8b3a3a }); // Kiremit rengi
-            
-            // Rastgele değil, ızgara şeklinde engeller/yollar
-            const gridSize = 10;
-            const mapSize = 100;
-
-            for (let x = -mapSize; x <= mapSize; x += gridSize) {
-                // Uzun kirişler (Z ekseni boyunca)
-                const beamGeo = new THREE.BoxGeometry(1, 4, 200);
-                const beam = new THREE.Mesh(beamGeo, brickMat);
-                beam.position.set(x, 0, 0); // Yerden hafif yukarıda olabilir ama basitlik için yerde
-                beam.receiveShadow = true;
-                beam.castShadow = true;
-                // scene.add(beam); // Zemin zaten var, sütunlar ekleyelim
-
-                // Sütunlar ve Kirişler (Fotoğraftaki yapıya benzetmek için)
-                for (let z = -mapSize; z <= mapSize; z += gridSize) {
-                    if (Math.random() > 0.1) { // %90 ihtimalle sütun koy
-                        const pillarGeo = new THREE.BoxGeometry(1.5, 6, 1.5);
-                        const pillar = new THREE.Mesh(pillarGeo, brickMat);
-                        pillar.position.set(x, 3, z);
-                        pillar.castShadow = true;
-                        pillar.receiveShadow = true;
-                        scene.add(pillar);
-                        obstacles.push(pillar);
-                    }
-                    
-                    // Üst Kirişler (Tavan gibi)
-                    if (x < mapSize) {
-                        const topBeamGeo = new THREE.BoxGeometry(gridSize, 1, 1.5);
-                        const topBeam = new THREE.Mesh(topBeamGeo, brickMat);
-                        topBeam.position.set(x + gridSize/2, 6, z);
-                        scene.add(topBeam);
-                    }
-                }
-            }
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function checkCollision(position) {
-            // Basit çarpışma kontrolü (Kutularla)
-            for (let obs of obstacles) {
-                const dx = position.x - obs.position.x;
-                const dz = position.z - obs.position.z;
-                // Sütun genişliği yaklaşık 1.5
-                if (Math.abs(dx) < 1 && Math.abs(dz) < 1) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         function animate() {
+            if (isGameOver) return;
             requestAnimationFrame(animate);
 
-            if (isGameOver) return;
-
-            // --- OYUNCU HAREKETİ ---
-            let speed = keys.shift ? playerSpeed * 1.5 : playerSpeed;
+            let moveSpeed = keys.shift ? playerSpeed * 1.8 : playerSpeed;
             let oldPos = player.position.clone();
 
-            if (keys.w) player.position.z -= speed;
-            if (keys.s) player.position.z += speed;
-            if (keys.a) player.position.x -= speed;
-            if (keys.d) player.position.x += speed;
+            if (keys.w) player.position.z -= moveSpeed;
+            if (keys.s) player.position.z += moveSpeed;
+            if (keys.a) player.position.x -= moveSpeed;
+            if (keys.d) player.position.x += moveSpeed;
 
-            // Çarpışma varsa geri al
-            if (checkCollision(player.position)) {
-                player.position.copy(oldPos);
-            }
+            // Çarpışma ve Sınır Kontrolü
+            obstacles.forEach(obs => {
+                if (player.position.distanceTo(obs.position) < 1.5) player.position.copy(oldPos);
+            });
 
-            // Oyuncu Dönüşü (Gittiği yöne bak)
-            if (keys.w || keys.s || keys.a || keys.d) {
-                let angle = Math.atan2(
-                    (keys.d ? 1 : 0) - (keys.a ? 1 : 0),
-                    (keys.s ? 1 : 0) - (keys.w ? 1 : 0)
-                );
-                player.rotation.y = angle;
-            }
-
-            // --- KAMERA TAKİBİ ---
-            // Kamera oyuncunun arkasında ve biraz yukarısında
-            const relativeCameraOffset = new THREE.Vector3(0, 5, 8);
-            const cameraOffset = relativeCameraOffset.applyMatrix4(player.matrixWorld);
-            
-            // Kamerayı yumuşakça hareket ettir (Lerp)
-            camera.position.lerp(cameraOffset, 0.1);
+            // Kamera Takibi
+            camera.position.set(player.position.x, player.position.y + 4, player.position.z + 7);
             camera.lookAt(player.position);
 
-            // --- YARATIK YAPAY ZEKASI (AI) ---
-            // Yaratık oyuncuya doğru hareket eder
-            const direction = new THREE.Vector3();
-            direction.subVectors(player.position, enemy.position).normalize();
-            
-            // Yaratık da engellere takılmamalı (Basitçe içinden geçiyor şu an, ama oyuncuyu sıkıştırması için böyle kalsın)
-            enemy.position.add(direction.multiplyScalar(enemySpeed));
+            // Düşman Takibi
+            let dir = new THREE.Vector3().subVectors(player.position, enemy.position).normalize();
+            enemy.position.add(dir.multiplyScalar(enemySpeed));
             enemy.lookAt(player.position);
 
-            // Yaratık Yakaladı mı?
-            if (player.position.distanceTo(enemy.position) < 1.5) {
+            if (player.position.distanceTo(enemy.position) < 1.2) {
                 isGameOver = true;
                 document.getElementById('gameover').style.display = 'block';
             }
@@ -295,6 +198,11 @@
         }
 
         init();
+        window.onresize = () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        };
     </script>
 </body>
 </html>
