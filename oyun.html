@@ -2,62 +2,86 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Escape to IBO</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Courier New', Courier, monospace; background-color: #000; user-select: none; }
+        body { margin: 0; overflow: hidden; font-family: 'Courier New', Courier, monospace; background-color: #000; user-select: none; -webkit-user-select: none; }
         
         /* UI ELEMENTLERİ */
-        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; justify-content: center; align-items: center; z-index: 10; }
+        #ui-layer { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; justify-content: center; align-items: center; 
+            z-index: 100; pointer-events: none; /* Tıklamalar alttaki oyuna geçsin diye */
+        }
         
+        /* Menülerin Tıklanabilir Olması İçin */
         .screen { 
-            background: rgba(0, 0, 0, 0.85); 
+            background: rgba(0, 0, 0, 0.9); 
             color: white; 
             padding: 40px; 
             border-radius: 10px; 
             text-align: center; 
-            pointer-events: auto; 
-            border: 2px solid #555;
+            pointer-events: auto; /* Sadece kutular tıklanabilsin */
+            border: 2px solid #ff4444;
             max-width: 600px;
-            width: 80%;
+            width: 85%;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
         }
 
-        h1 { font-size: 3em; margin-bottom: 20px; color: #ff4444; text-shadow: 2px 2px 0 #000; }
-        p { font-size: 1.2em; line-height: 1.6; margin-bottom: 30px; }
+        h1 { font-size: 2.5em; margin-bottom: 20px; color: #ff4444; text-transform: uppercase; letter-spacing: 5px; }
+        h2 { color: #888; border-bottom: 1px solid #444; padding-bottom: 10px; }
+        p { font-size: 1.1em; line-height: 1.6; color: #ccc; }
         
         button {
-            background: #ff4444; color: white; border: none; padding: 15px 40px; 
+            background: #ff4444; color: white; border: none; padding: 15px 50px; 
             font-size: 1.5em; cursor: pointer; font-family: inherit; border-radius: 5px;
-            transition: transform 0.1s;
+            margin-top: 20px; text-transform: uppercase; font-weight: bold;
         }
+        button:hover { background: #ff2222; }
         button:active { transform: scale(0.95); }
+
+        /* GİZLEME SINIFI */
+        .hidden { display: none !important; }
 
         /* MOBİL KONTROLLER */
         #mobile-controls {
-            position: absolute; bottom: 20px; left: 0; width: 100%; height: 150px;
-            display: none; /* JS ile mobilde ise açılacak */
-            pointer-events: none;
-            z-index: 5;
+            position: absolute; bottom: 20px; left: 0; width: 100%; height: 100%;
+            display: none; pointer-events: none; z-index: 50;
         }
 
-        .control-zone {
-            position: absolute; bottom: 20px; width: 120px; height: 120px;
-            background: rgba(255, 255, 255, 0.2); border-radius: 50%;
-            pointer-events: auto; border: 2px solid rgba(255, 255, 255, 0.4);
+        /* Sol Joystick Alanı */
+        #joystick-area {
+            position: absolute; bottom: 50px; left: 30px; width: 150px; height: 150px;
+            background: rgba(255, 255, 255, 0.1); border-radius: 50%;
+            pointer-events: auto; border: 2px solid rgba(255, 255, 255, 0.2);
         }
-        #stick-zone { left: 30px; }
         #stick { 
-            width: 50px; height: 50px; background: rgba(255, 255, 255, 0.6); 
-            border-radius: 50%; position: absolute; top: 35px; left: 35px; 
+            width: 60px; height: 60px; background: rgba(255, 68, 68, 0.8); 
+            border-radius: 50%; position: absolute; top: 45px; left: 45px; 
+            box-shadow: 0 0 10px black;
         }
-        #jump-btn { right: 30px; background: rgba(255, 68, 68, 0.4); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; }
-        #jump-btn:active { background: rgba(255, 68, 68, 0.8); }
 
-        /* Gizleme sınıfları */
-        .hidden { display: none !important; }
+        /* Sağ Zıplama Butonu */
+        #jump-btn { 
+            position: absolute; bottom: 80px; right: 30px; 
+            width: 100px; height: 100px; 
+            background: rgba(255, 255, 255, 0.2); 
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%; 
+            pointer-events: auto;
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-weight: bold; font-size: 1.2em;
+        }
+        #jump-btn:active { background: rgba(255, 255, 255, 0.5); }
 
-        /* Story Text alanı */
-        #story-text-content { text-align: left; color: #ddd; font-size: 1.1rem; white-space: pre-line; }
+        /* Sağ taraf bakma alanı (Görünmez) */
+        #look-area {
+            position: absolute; top: 0; right: 0; width: 50%; height: 80%;
+            pointer-events: auto;
+            /* background: rgba(0,255,0,0.1); Debug için açılabilir */ 
+        }
+
+        #story-text-content { text-align: left; margin: 20px 0; max-height: 300px; overflow-y: auto; }
 
     </style>
 </head>
@@ -66,89 +90,114 @@
     <div id="ui-layer">
         <div id="main-menu" class="screen">
             <h1>Escape to IBO</h1>
+            <p>Tepelerin ardındaki gizemden kaçabilir misin?</p>
             <button id="play-btn">OYNA</button>
         </div>
 
         <div id="story-screen" class="screen hidden">
             <h2>HİKAYE</h2>
             <div id="story-text-content">
-                Buraya oyunun hikayesini yazacaksın. 
-                Örneğin: "IBO'nun lanetli tepelerinde kayboldun..."
-                (HTML kodunu açıp bu kısmı düzenleyebilirsin.)
+                <p>Gözlerini açtığında kendini sonsuz yeşil tepelerin arasında buldun.</p>
+                <p>Uzakta terk edilmiş sarı evler var ama içinde kimse yok.</p>
+                <p>Aniden arkanda bir ses duydun. Metalik, hızlı ve aç...</p>
+                <p>O şey seni arıyor. Durma. Koş.</p>
             </div>
-            <br>
             <button id="continue-btn">DEVAM ET</button>
         </div>
 
         <div id="game-over-screen" class="screen hidden">
-            <h1 style="color: red;">YAKALANDIN!</h1>
-            <p>O karanlık varlık seni ele geçirdi.</p>
-            <button id="retry-btn">TEKRAR DENEYİN</button>
+            <h1 style="color: darkred;">YAKALANDIN!</h1>
+            <p>Kaçış yoktu...</p>
+            <button id="retry-btn">TEKRAR DENE</button>
         </div>
     </div>
 
     <div id="mobile-controls">
-        <div id="stick-zone"><div id="stick"></div></div>
-        <div id="jump-zone" class="control-zone" style="border:none; background:transparent;"></div>
-        <div id="jump-btn" class="control-zone">ZIPLA</div>
+        <div id="joystick-area"><div id="stick"></div></div>
+        <div id="look-area"></div> <div id="jump-btn">ZIPLA</div>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
 
     <script>
-        // --- DEĞİŞKENLER ---
-        let camera, scene, renderer, controls;
+        // --- TEMEL AYARLAR ---
+        let scene, camera, renderer, controls;
         let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false;
         let canJump = false;
-        let prevTime = performance.now();
         let velocity = new THREE.Vector3();
         let direction = new THREE.Vector3();
-        let raycaster;
-        let terrainMesh;
+        let prevTime = performance.now();
         
         // Oyun Durumu
         let isGameActive = false;
-        let isCaught = false;
-
-        // Düşman (Örümcek)
-        let spider;
-        let spiderSpeed = 8.5; // Düşman hızı
-        let spiderLegs = [];
-        let spiderAnimOffset = 0;
-
-        // Mobil Kontroller
         let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        let touchMove = { x: 0, y: 0 }; // Joystick input
+        
+        // Düşman
+        let spider;
+        let spiderLegs = [];
+        let spiderAnimSpeed = 0;
 
-        // --- BAŞLANGIÇ FONKSİYONLARI ---
+        // Mobil Değişkenleri
+        let touchMove = { x: 0, y: 0 };
+        let touchLook = { x: 0, y: 0 };
+
+        // --- BAŞLATMA ---
+        window.addEventListener('load', () => {
+            init();
+            setupUI();
+            animate();
+        });
+
+        function setupUI() {
+            // Buton Olayları - Hatayı önlemek için doğrudan elementlere erişim
+            const playBtn = document.getElementById('play-btn');
+            const continueBtn = document.getElementById('continue-btn');
+            const retryBtn = document.getElementById('retry-btn');
+
+            playBtn.addEventListener('click', () => {
+                document.getElementById('main-menu').classList.add('hidden');
+                document.getElementById('story-screen').classList.remove('hidden');
+            }, false);
+
+            continueBtn.addEventListener('click', () => {
+                document.getElementById('story-screen').classList.add('hidden');
+                startGame();
+            }, false);
+
+            retryBtn.addEventListener('click', () => {
+                document.getElementById('game-over-screen').classList.add('hidden');
+                resetGame();
+            }, false);
+
+            if (isMobile) {
+                document.getElementById('mobile-controls').style.display = 'block';
+                setupMobileInputs();
+            }
+        }
 
         function init() {
-            // Sahne ve Kamera
+            // Sahne
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x87CEEB); // Gökyüzü mavisi
-            scene.fog = new THREE.Fog(0x87CEEB, 10, 150); // Sis efekti (sonsuzluk hissi için)
+            scene.background = new THREE.Color(0x87CEEB);
+            scene.fog = new THREE.Fog(0x87CEEB, 20, 100); // Sis ile sonsuzluk hissi
 
+            // Kamera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.y = 10;
 
-            // Işıklandırma
-            const light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
-            light.position.set(0, 20, 0);
-            scene.add(light);
+            // Işık
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+            hemiLight.position.set(0, 200, 0);
+            scene.add(hemiLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            dirLight.position.set(50, 100, 50);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(50, 200, 100);
             dirLight.castShadow = true;
             scene.add(dirLight);
 
-            // Arazi Oluşturma (Tepeler)
+            // Zemin ve Nesneler
             createTerrain();
-
-            // Evleri Oluşturma
             createHouses();
-
-            // Örümcek Oluşturma
             createSpider();
 
             // Renderer
@@ -157,176 +206,159 @@
             renderer.shadowMap.enabled = true;
             document.body.appendChild(renderer.domElement);
 
-            // Kontroller (Masaüstü için PointerLock)
+            // Kontroller (PC için Mouse Kilidi)
             controls = new THREE.PointerLockControls(camera, document.body);
 
-            // Event Listener'lar
+            // Klavye Dinleyicileri
             document.addEventListener('keydown', onKeyDown);
             document.addEventListener('keyup', onKeyUp);
             window.addEventListener('resize', onWindowResize);
-
-            // UI Butonları
-            document.getElementById('play-btn').addEventListener('click', () => {
-                document.getElementById('main-menu').classList.add('hidden');
-                document.getElementById('story-screen').classList.remove('hidden');
-            });
-
-            document.getElementById('continue-btn').addEventListener('click', startGame);
-            document.getElementById('retry-btn').addEventListener('click', resetGame);
-
-            // Mobil Kontrol Kurulumu
-            if(isMobile) {
-                setupMobileControls();
-                document.getElementById('mobile-controls').style.display = 'block';
-            }
-            
-            // Animasyon Döngüsü
-            animate();
         }
 
-        // --- ARAZİ VE NESNELER ---
-
+        // --- DÜNYA OLUŞTURMA ---
         function getHeightAt(x, z) {
-            // Basit bir dalga (tepe) fonksiyonu
-            return (Math.sin(x * 0.05) * 5) + (Math.cos(z * 0.05) * 5) + (Math.sin(x * 0.02 + z * 0.02) * 10);
+            return (Math.sin(x * 0.04) * 4) + (Math.cos(z * 0.04) * 4) + (Math.sin(x * 0.1 + z * 0.1) * 2);
         }
 
         function createTerrain() {
-            const geometry = new THREE.PlaneGeometry(400, 400, 100, 100);
+            const geometry = new THREE.PlaneGeometry(500, 500, 150, 150);
             geometry.rotateX(-Math.PI / 2);
-
-            const vertices = geometry.attributes.position.array;
-            for (let i = 0; i < vertices.length; i += 3) {
-                const x = vertices[i];
-                const z = vertices[i + 2];
-                vertices[i + 1] = getHeightAt(x, z); // Yüksekliği ayarla
+            
+            const posAttribute = geometry.attributes.position;
+            for (let i = 0; i < posAttribute.count; i++) {
+                const x = posAttribute.getX(i);
+                const z = posAttribute.getZ(i);
+                posAttribute.setY(i, getHeightAt(x, z));
             }
             geometry.computeVertexNormals();
 
-            const material = new THREE.MeshStandardMaterial({ 
-                color: 0x5FA032, // Çimen yeşili
-                roughness: 0.8 
-            });
-            terrainMesh = new THREE.Mesh(geometry, material);
-            scene.add(terrainMesh);
+            const material = new THREE.MeshStandardMaterial({ color: 0x5FA032, roughness: 0.9 });
+            const terrain = new THREE.Mesh(geometry, material);
+            scene.add(terrain);
         }
 
         function createHouses() {
-            // Rastgele evler yerleştir
-            for(let i=0; i<30; i++) {
-                let x = (Math.random() - 0.5) * 300;
-                let z = (Math.random() - 0.5) * 300;
+            for(let i=0; i<60; i++) {
+                let x = (Math.random() - 0.5) * 400;
+                let z = (Math.random() - 0.5) * 400;
                 let y = getHeightAt(x, z);
 
-                // Evin Gövdesi
-                const houseGeo = new THREE.BoxGeometry(6, 6, 6);
-                const houseMat = new THREE.MeshStandardMaterial({ color: 0xE8C85A }); // Sarımsı
-                const house = new THREE.Mesh(houseGeo, houseMat);
+                const group = new THREE.Group();
                 
+                // Ev Gövdesi
+                const body = new THREE.Mesh(
+                    new THREE.BoxGeometry(5, 5, 5),
+                    new THREE.MeshStandardMaterial({ color: 0xF2C94C }) // Sarı
+                );
+                body.position.y = 2.5;
+
                 // Çatı
-                const roofGeo = new THREE.ConeGeometry(4.5, 3, 4);
-                const roofMat = new THREE.MeshStandardMaterial({ color: 0x333333 }); // Gri
-                const roof = new THREE.Mesh(roofGeo, roofMat);
-                roof.position.y = 4.5;
+                const roof = new THREE.Mesh(
+                    new THREE.ConeGeometry(4, 3, 4),
+                    new THREE.MeshStandardMaterial({ color: 0x333333 })
+                );
+                roof.position.y = 6.5;
                 roof.rotation.y = Math.PI / 4;
+
+                // Pencere
+                const windowMesh = new THREE.Mesh(
+                    new THREE.PlaneGeometry(1.5, 1.5),
+                    new THREE.MeshBasicMaterial({ color: 0x87CEEB })
+                );
+                windowMesh.position.set(0, 3, 2.51);
+
+                group.add(body);
+                group.add(roof);
+                group.add(windowMesh);
                 
-                house.add(roof);
-                house.position.set(x, y + 3, z); // Yere oturt
-                scene.add(house);
+                group.position.set(x, y, z);
+                // Evler merkeze bakmasın, rastgele dönsün
+                group.rotation.y = Math.random() * Math.PI;
+                
+                scene.add(group);
             }
         }
 
         function createSpider() {
             spider = new THREE.Group();
 
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.4 });
+            
             // Gövde
-            const bodyGeo = new THREE.SphereGeometry(1.5, 16, 16);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x111111 }); // Siyah
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            const body = new THREE.Mesh(new THREE.SphereGeometry(1.5, 16, 16), bodyMat);
             spider.add(body);
 
             // Kafa
-            const headGeo = new THREE.SphereGeometry(0.8, 16, 16);
-            const head = new THREE.Mesh(headGeo, bodyMat);
-            head.position.set(0, 0.5, 1.2);
+            const head = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 16), bodyMat);
+            head.position.set(0, 0.5, 1.5);
             spider.add(head);
 
-            // Gözler (Korkunç Kırmızı)
+            // Gözler
             const eyeGeo = new THREE.SphereGeometry(0.2);
             const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-            const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
-            leftEye.position.set(-0.3, 0.6, 1.8);
-            const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
-            rightEye.position.set(0.3, 0.6, 1.8);
-            spider.add(leftEye);
-            spider.add(rightEye);
+            const eye1 = new THREE.Mesh(eyeGeo, eyeMat); eye1.position.set(-0.4, 0.5, 0.8);
+            const eye2 = new THREE.Mesh(eyeGeo, eyeMat); eye2.position.set(0.4, 0.5, 0.8);
+            head.add(eye1); head.add(eye2);
 
-            // Bacaklar (4 adet)
-            for(let i=0; i<4; i++) {
-                const legGeo = new THREE.CylinderGeometry(0.2, 0.1, 4);
+            // Bacaklar
+            for(let i=0; i<8; i++) { // 8 bacaklı olsun
+                const legPiv = new THREE.Object3D();
+                const legGeo = new THREE.BoxGeometry(0.2, 0.2, 3);
                 const leg = new THREE.Mesh(legGeo, bodyMat);
+                leg.position.z = 1.5;
+                legPiv.add(leg);
                 
-                leg.rotation.z = (i < 2 ? 1 : -1) * 0.5; // Sol/Sağ eğim
-                leg.rotation.x = (i % 2 === 0 ? 0.5 : -0.5); // Ön/Arka
+                legPiv.rotation.y = (i / 4) * Math.PI; 
+                legPiv.position.y = -0.5;
                 
-                leg.position.y = -1;
-                leg.position.x = (i < 2 ? -1 : 1);
-                
-                spiderLegs.push(leg);
-                spider.add(leg);
+                spiderLegs.push(legPiv);
+                spider.add(legPiv);
             }
 
-            spider.position.set(40, 10, 40); // Başlangıç konumu
+            spider.position.set(0, -50, 0); // Başlangıçta gizli
             scene.add(spider);
         }
 
         // --- OYUN MANTIĞI ---
 
         function startGame() {
-            document.getElementById('story-screen').classList.add('hidden');
-            document.getElementById('ui-layer').style.pointerEvents = 'none'; // Oyuna tıkla
-            
             isGameActive = true;
-            isCaught = false;
-
-            // Kamera ve Oyuncu Pozisyonu
-            camera.position.set(0, 20, 0);
+            velocity.set(0,0,0);
+            camera.position.set(0, 10, 0);
+            camera.rotation.set(0,0,0);
             
-            // Örümcek uzağa ışınlansın
-            spider.position.set(40, getHeightAt(40,40) + 2, 40);
+            // Örümcek başlangıcı (oyuncunun arkasında spawn olsun)
+            spider.position.set(0, 10, -40);
 
             if (!isMobile) {
-                controls.lock(); // Fareyi kilitle
+                controls.lock();
             }
         }
 
         function resetGame() {
-            document.getElementById('game-over-screen').classList.add('hidden');
             startGame();
         }
 
-        function showGameOver() {
+        function gameOver() {
             isGameActive = false;
-            isCaught = true;
             if(!isMobile) controls.unlock();
-            document.getElementById('ui-layer').style.pointerEvents = 'auto';
             document.getElementById('game-over-screen').classList.remove('hidden');
         }
 
-        // --- KONTROLLER ---
+        // --- GİRDİ YÖNETİMİ ---
 
-        function onKeyDown(event) {
-            switch (event.code) {
+        function onKeyDown(e) {
+            switch (e.code) {
                 case 'ArrowUp': case 'KeyW': moveForward = true; break;
                 case 'ArrowLeft': case 'KeyA': moveLeft = true; break;
                 case 'ArrowDown': case 'KeyS': moveBackward = true; break;
                 case 'ArrowRight': case 'KeyD': moveRight = true; break;
-                case 'Space': if (canJump === true) velocity.y += 350; canJump = false; break;
+                case 'Space': if (canJump) { velocity.y += 25; canJump = false; } break;
             }
         }
 
-        function onKeyUp(event) {
-            switch (event.code) {
+        function onKeyUp(e) {
+            switch (e.code) {
                 case 'ArrowUp': case 'KeyW': moveForward = false; break;
                 case 'ArrowLeft': case 'KeyA': moveLeft = false; break;
                 case 'ArrowDown': case 'KeyS': moveBackward = false; break;
@@ -334,67 +366,74 @@
             }
         }
 
-        function setupMobileControls() {
-            const stickZone = document.getElementById('stick-zone');
+        function setupMobileInputs() {
+            const joystickArea = document.getElementById('joystick-area');
             const stick = document.getElementById('stick');
+            const lookArea = document.getElementById('look-area');
             const jumpBtn = document.getElementById('jump-btn');
             
             let startX, startY;
 
-            stickZone.addEventListener('touchstart', (e) => {
+            // Hareket (Joystick)
+            joystickArea.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 startX = e.touches[0].clientX;
                 startY = e.touches[0].clientY;
-            });
+            }, {passive: false});
 
-            stickZone.addEventListener('touchmove', (e) => {
+            joystickArea.addEventListener('touchmove', (e) => {
                 e.preventDefault();
-                const touchX = e.touches[0].clientX;
-                const touchY = e.touches[0].clientY;
+                const x = e.touches[0].clientX;
+                const y = e.touches[0].clientY;
+                let dx = x - startX;
+                let dy = y - startY;
+                const distance = Math.min(Math.sqrt(dx*dx + dy*dy), 50); // Sınırla
+                const angle = Math.atan2(dy, dx);
+                
+                dx = Math.cos(angle) * distance;
+                dy = Math.sin(angle) * distance;
 
-                let diffX = touchX - startX;
-                let diffY = touchY - startY;
+                stick.style.transform = `translate(${dx}px, ${dy}px)`;
+                
+                touchMove.x = dx / 50; // -1 ile 1 arası
+                touchMove.y = dy / 50;
+            }, {passive: false});
 
-                // Sınırlandırma
-                const limit = 40;
-                const distance = Math.sqrt(diffX*diffX + diffY*diffY);
-                if (distance > limit) {
-                    const angle = Math.atan2(diffY, diffX);
-                    diffX = Math.cos(angle) * limit;
-                    diffY = Math.sin(angle) * limit;
-                }
-
-                stick.style.transform = `translate(${diffX}px, ${diffY}px)`;
-
-                // Hareketi ayarla (-1 ile 1 arası)
-                touchMove.x = diffX / limit;
-                touchMove.y = diffY / limit;
-            });
-
-            stickZone.addEventListener('touchend', () => {
+            joystickArea.addEventListener('touchend', (e) => {
+                e.preventDefault();
                 stick.style.transform = `translate(0px, 0px)`;
                 touchMove.x = 0;
                 touchMove.y = 0;
             });
 
-            jumpBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                if (canJump === true) {
-                    velocity.y += 350;
-                    canJump = false;
-                }
+            // Etrafa Bakma (Sağ Ekran)
+            let lastLookX, lastLookY;
+            lookArea.addEventListener('touchstart', (e) => {
+                lastLookX = e.touches[0].clientX;
+                lastLookY = e.touches[0].clientY;
             });
 
-            // Ekrana dokunarak kamerayı çevirme (Sağ taraf)
-            document.addEventListener('touchmove', (e) => {
-                if (e.touches[0].clientX > window.innerWidth / 2) {
-                    // Basit kamera dönüşü
-                     // Tam bir FPS dönüşü mobilde daha karmaşık olduğu için burada
-                     // basitçe karakterin yönüne destek atıyoruz
-                     // Gerçek bir FPS touch kontrolü için daha fazla kod gerekir.
-                     // Bu örnekte karakter baktığı yöne gider, joystick ile hem dönüp hem yürür.
-                     camera.rotation.y -= e.movementX * 0.005 || 0;
-                }
+            lookArea.addEventListener('touchmove', (e) => {
+                e.preventDefault(); // Sayfa kaymasını engelle
+                const x = e.touches[0].clientX;
+                const y = e.touches[0].clientY;
+                
+                const sensitivity = 0.005;
+                const dx = x - lastLookX;
+                const dy = y - lastLookY;
+
+                camera.rotation.y -= dx * sensitivity;
+                // Bakış açısı sınırlandırma (yukarı aşağı) - opsiyonel, basitlik için sadece Y ekseni
+                // camera.rotation.x -= dy * sensitivity; 
+                
+                lastLookX = x;
+                lastLookY = y;
+            }, {passive: false});
+
+            // Zıplama
+            jumpBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if(canJump) { velocity.y += 25; canJump = false; }
             });
         }
 
@@ -404,7 +443,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // --- ANA DÖNGÜ ---
+        // --- FİZİK VE DÖNGÜ ---
 
         function animate() {
             requestAnimationFrame(animate);
@@ -412,90 +451,86 @@
             if (isGameActive) {
                 const time = performance.now();
                 const delta = (time - prevTime) / 1000;
+                prevTime = time;
 
-                // --- OYUNCU HAREKETİ ---
+                // --- HAREKET FİZİĞİ ---
                 velocity.x -= velocity.x * 10.0 * delta;
                 velocity.z -= velocity.z * 10.0 * delta;
-                velocity.y -= 9.8 * 100.0 * delta; // Yerçekimi
+                velocity.y -= 9.8 * 8.0 * delta; // Yerçekimi
 
                 direction.z = Number(moveForward) - Number(moveBackward);
                 direction.x = Number(moveRight) - Number(moveLeft);
                 direction.normalize();
 
-                // Masaüstü Hareketi
-                if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
-                if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+                const speed = 150.0;
+                
+                // Klavye hareketi
+                if (moveForward || moveBackward) velocity.z -= direction.z * speed * delta;
+                if (moveLeft || moveRight) velocity.x -= direction.x * speed * delta;
 
-                // Mobil Hareketi
-                if (isMobile) {
-                    // Joystick Y ileri/geri, X sağ/sol (strafe)
-                    // Kameranın baktığı yöne göre vektör hesapla
-                    if (touchMove.y !== 0 || touchMove.x !== 0) {
-                        const camDir = new THREE.Vector3();
-                        camera.getWorldDirection(camDir);
-                        camDir.y = 0;
-                        camDir.normalize();
+                // Mobil Joystick hareketi
+                if (isMobile && (touchMove.x !== 0 || touchMove.y !== 0)) {
+                    const camDir = new THREE.Vector3();
+                    camera.getWorldDirection(camDir);
+                    camDir.y = 0; camDir.normalize();
+                    const camSide = new THREE.Vector3().crossVectors(camera.up, camDir).normalize();
 
-                        const camSide = new THREE.Vector3();
-                        camSide.crossVectors(camera.up, camDir).normalize(); // Sağ vektör (Cross product sıralaması önemli)
-
-                        // İleri/Geri
-                        velocity.z += camDir.z * touchMove.y * 400.0 * delta; // Y joystick
-                        velocity.x += camDir.x * touchMove.y * 400.0 * delta;
-
-                        // Sağ/Sol
-                        velocity.z += camSide.z * touchMove.x * 400.0 * delta; // X joystick
-                        velocity.x += camSide.x * touchMove.x * 400.0 * delta;
-                        
-                        // Mobilde kamera dönüşü için basit bir "otomatik dönüş" veya ekran sağ tarafı kullanılabilir
-                        // Şimdilik joystick sadece yürüme yapıyor.
-                        camera.rotation.y -= touchMove.x * 0.02; // Hafifçe dön
-                    }
+                    // Joystick Y ekseni (ileri-geri)
+                    velocity.x += (camDir.x * touchMove.y + camSide.x * touchMove.x) * speed * delta;
+                    velocity.z += (camDir.z * touchMove.y + camSide.z * touchMove.x) * speed * delta;
                 }
 
                 controls.moveRight(-velocity.x * delta);
                 controls.moveForward(-velocity.z * delta);
-                controls.getObject().position.y += (velocity.y * delta); // Y pozisyonunu güncelle
+                camera.position.y += velocity.y * delta;
 
-                // Zemin Çarpışması
-                let terrainHeight = getHeightAt(camera.position.x, camera.position.z);
-                if (camera.position.y < terrainHeight + 10) {
+                // Yere Çarpma
+                const groundH = getHeightAt(camera.position.x, camera.position.z);
+                if (camera.position.y < groundH + 3) {
                     velocity.y = 0;
-                    camera.position.y = terrainHeight + 10;
+                    camera.position.y = groundH + 3;
                     canJump = true;
                 }
+
+                // Sonsuz Harita Hilesi (Sınırları aşarsa başa at)
+                if (camera.position.x > 200) camera.position.x = -190;
+                if (camera.position.x < -200) camera.position.x = 190;
+                if (camera.position.z > 200) camera.position.z = -190;
+                if (camera.position.z < -200) camera.position.z = 190;
+
+                // --- DÜŞMAN YAPAY ZEKASI ---
+                const dist = spider.position.distanceTo(camera.position);
                 
-                // Harita dışına çıkmayı engelle (Sonsuz gibi hissettir ama sınırla)
-                if(camera.position.x > 190) camera.position.x = 190;
-                if(camera.position.x < -190) camera.position.x = -190;
-                if(camera.position.z > 190) camera.position.z = 190;
-                if(camera.position.z < -190) camera.position.z = -190;
+                // Örümcek Yerde Yürüsün
+                let spiderGround = getHeightAt(spider.position.x, spider.position.z);
+                spider.position.y = spiderGround + 2;
 
-                // --- ÖRÜMCEK YAPAY ZEKASI ---
-                const playerPos = camera.position;
-                const spiderPos = spider.position;
-
-                // Örümceği oyuncuya döndür
-                spider.lookAt(playerPos.x, playerPos.y, playerPos.z);
+                // Takip Et
+                spider.lookAt(camera.position.x, spider.position.y, camera.position.z);
+                const dir = new THREE.Vector3().subVectors(camera.position, spider.position).normalize();
                 
-                // Oyuncuya doğru hareket et
-                const dirToPlayer = new THREE.Vector3().subVectors(playerPos, spiderPos).normalize();
-                
-                // Mesafe
-                const dist = playerPos.distanceTo(spiderPos);
+                // Hız
+                const spiderSpeed = 12.0; 
+                spider.position.add(dir.multiplyScalar(spiderSpeed * delta));
 
-                if (dist > 2) { // Çok yaklaşmadıysa kovala
-                    spider.position.add(dirToPlayer.multiplyScalar(spiderSpeed * delta));
-                    
-                    // Örümceğin yerdeki yüksekliği
-                    let spiderGroundY = getHeightAt(spider.position.x, spider.position.z);
-                    spider.position.y = spiderGroundY + 1.5;
-                } else {
-                    // Yakaladı!
-                    showGameOver();
-                }
-
-                // Örümcek Bacak Animasyonu
-                spiderAnimOffset += delta * 10;
+                // Bacak Animasyonu
+                spiderAnimSpeed += delta * 15;
                 spiderLegs.forEach((leg, i) => {
-                    leg.rotatio
+                    leg.rotation.x = Math.sin(spiderAnimSpeed + i) * 0.5;
+                });
+
+                // Yakalanma Kontrolü
+                if (dist < 4) {
+                    gameOver();
+                }
+            } else {
+                prevTime = performance.now(); // Duraklatılınca zamanı güncelle
+            }
+
+            renderer.render(scene, camera);
+        }
+
+    </script>
+</body>
+    </html>
+    
