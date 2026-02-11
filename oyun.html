@@ -3,80 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yabuz ibodan kacıuo</title>
+    <title>Kaçış Oyunu: Mobil + Zıplama</title>
     <style>
         body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; touch-action: none; }
-        
-        /* Mobil Kontroller */
-        #controls {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            display: grid;
-            grid-template-columns: repeat(3, 60px);
-            grid-template-rows: repeat(3, 60px);
-            gap: 10px;
-            z-index: 100;
+        #info {
+            position: absolute; top: 10px; width: 100%; text-align: center;
+            color: white; z-index: 100; text-shadow: 1px 1px 2px black; pointer-events: none;
         }
+        
+        /* Mobil Kontrol Paneli */
+        .touch-controls {
+            position: absolute; bottom: 20px; width: 100%; height: 180px;
+            display: flex; justify-content: space-between; align-items: flex-end;
+            padding: 0 20px; box-sizing: border-box; z-index: 1000;
+        }
+        .d-pad { display: grid; grid-template-columns: repeat(3, 60px); grid-template-rows: repeat(2, 60px); gap: 5px; }
+        .action-btns { display: flex; flex-direction: column; gap: 10px; }
+        
         .btn {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid white;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            user-select: none;
+            width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #fff; border-radius: 10px; color: white;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; user-select: none; -webkit-tap-highlight-color: transparent;
         }
-        #btn-run {
-            position: absolute;
-            bottom: 40px;
-            right: 40px;
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 0, 0, 0.3);
-            border: 3px solid red;
-            border-radius: 50%;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        
+        .btn:active { background: rgba(255, 255, 255, 0.5); }
+        .wide-btn { width: 100px; background: rgba(255, 0, 0, 0.3); border-color: red; }
+
         #gameover {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: red;
-            font-size: 30px;
-            text-align: center;
-            background: rgba(0,0,0,0.9);
-            padding: 30px;
-            border: 3px solid red;
-            z-index: 200;
-            width: 80%;
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); color: red; font-size: 30px;
+            text-align: center; background: rgba(0,0,0,0.9); padding: 30px;
+            border: 3px solid red; z-index: 2000; width: 80%;
         }
-        button.retry { font-size: 20px; padding: 10px; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="controls">
-        <div></div><div class="btn" id="up">↑</div><div></div>
-        <div class="btn" id="left">←</div><div></div><div class="btn" id="right">→</div>
-        <div></div><div class="btn" id="down">↓</div><div></div>
+    <div id="info">
+        <h3>KAÇIŞ</h3>
+        <p>W,A,S,D veya Tuşlar / Boşluk ile Zıpla</p>
     </div>
-    <div id="btn-run">KOŞ</div>
+
+    <div class="touch-controls">
+        <div class="d-pad">
+            <div></div><div class="btn" id="up">↑</div><div></div>
+            <div class="btn" id="left">←</div><div class="btn" id="down">↓</div><div class="btn" id="right">→</div>
+        </div>
+        <div class="action-btns">
+            <div class="btn wide-btn" id="jump-btn">ZIPLA</div>
+            <div class="btn wide-btn" id="run-btn">KOŞ</div>
+        </div>
+    </div>
 
     <div id="gameover">
-        SİKİLDİN!<br>
-        <button class="retry" onclick="location.reload()">TEKRAR DENE</button>
+        YAKALANDIN!<br>
+        <button onclick="location.reload()" style="font-size:20px; margin-top:20px;">Tekrar Dene</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -84,9 +65,16 @@
     <script>
         let scene, camera, renderer, player, enemy;
         let obstacles = [];
-        let keys = { w: false, a: false, s: false, d: false, shift: false };
+        let keys = { w: false, a: false, s: false, d: false, shift: false, space: false };
+        
+        // Fizik Değişkenleri
+        let playerVelocityY = 0;
+        let isGrounded = true;
+        const gravity = 0.012;
+        const jumpForce = 0.25;
+        
         let playerSpeed = 0.4;
-        let enemySpeed = 0.32;
+        let enemySpeed = 0.33;
         let isGameOver = false;
 
         function init() {
@@ -104,7 +92,7 @@
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
             scene.add(ambientLight);
 
-            // Oyuncu (Anime Kızı Temsili)
+            // Oyuncu (Anime Kızı)
             player = new THREE.Group();
             const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 1.2), new THREE.MeshStandardMaterial({ color: 0x3344ff }));
             body.position.y = 0.6;
@@ -113,52 +101,54 @@
             player.add(body, head);
             scene.add(player);
 
-            // Yaratık (Siyah Canavar) - 40 birim uzağa spawnlanıyor
+            // YARATIK - Spawn noktasını 60 birim uzağa aldım
             enemy = new THREE.Mesh(new THREE.BoxGeometry(0.8, 3, 0.8), new THREE.MeshStandardMaterial({ color: 0x000000 }));
-            enemy.position.set(0, 1.5, -40); 
+            enemy.position.set(0, 1.5, -60); 
             scene.add(enemy);
 
-            // Harita Oluşturma
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshStandardMaterial({ color: 0x221111 }));
+            // Zemin ve Harita
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshStandardMaterial({ color: 0x221111 }));
             floor.rotation.x = -Math.PI / 2;
             scene.add(floor);
 
             const brickMat = new THREE.MeshStandardMaterial({ color: 0x662222 });
-            for (let i = 0; i < 150; i++) {
-                const p = new THREE.Mesh(new THREE.BoxGeometry(1.5, 6, 1.5), brickMat);
-                p.position.set(Math.random() * 100 - 50, 3, Math.random() * 100 - 50);
-                if (p.position.distanceTo(player.position) > 5) {
+            for (let i = 0; i < 100; i++) {
+                const p = new THREE.Mesh(new THREE.BoxGeometry(2, 6, 2), brickMat);
+                p.position.set(Math.random() * 160 - 80, 3, Math.random() * 160 - 80);
+                if (p.position.distanceTo(player.position) > 10) {
                     scene.add(p);
                     obstacles.push(p);
                 }
             }
 
-            // --- KONTROL ETKİLEŞİMLERİ ---
+            // --- KONTROLLER ---
             // Klavye
-            window.onkeydown = (e) => {
-                if(e.key=='w'||e.key=='ArrowUp') keys.w=true;
-                if(e.key=='s'||e.key=='ArrowDown') keys.s=true;
-                if(e.key=='a'||e.key=='ArrowLeft') keys.a=true;
-                if(e.key=='d'||e.key=='ArrowRight') keys.d=true;
-                if(e.shiftKey) keys.shift=true;
-            };
-            window.onkeyup = (e) => {
-                if(e.key=='w'||e.key=='ArrowUp') keys.w=false;
-                if(e.key=='s'||e.key=='ArrowDown') keys.s=false;
-                if(e.key=='a'||e.key=='ArrowLeft') keys.a=false;
-                if(e.key=='d'||e.key=='ArrowRight') keys.d=false;
-                if(!e.shiftKey) keys.shift=false;
-            };
+            window.addEventListener('keydown', (e) => {
+                if(e.code === 'KeyW' || e.key === 'ArrowUp') keys.w = true;
+                if(e.code === 'KeyS' || e.key === 'ArrowDown') keys.s = true;
+                if(e.code === 'KeyA' || e.key === 'ArrowLeft') keys.a = true;
+                if(e.code === 'KeyD' || e.key === 'ArrowRight') keys.d = true;
+                if(e.code === 'Space') keys.space = true;
+                if(e.shiftKey) keys.shift = true;
+            });
+            window.addEventListener('keyup', (e) => {
+                if(e.code === 'KeyW' || e.key === 'ArrowUp') keys.w = false;
+                if(e.code === 'KeyS' || e.key === 'ArrowDown') keys.s = false;
+                if(e.code === 'KeyA' || e.key === 'ArrowLeft') keys.a = false;
+                if(e.code === 'KeyD' || e.key === 'ArrowRight') keys.d = false;
+                if(e.code === 'Space') keys.space = false;
+                if(!e.shiftKey) keys.shift = false;
+            });
 
-            // Mobil Dokunmatik (Touch)
-            const setupTouch = (id, key) => {
+            // Mobil Dokunmatik Atamaları
+            const bindTouch = (id, key) => {
                 const el = document.getElementById(id);
-                el.ontouchstart = (e) => { e.preventDefault(); keys[key] = true; };
-                el.ontouchend = (e) => { e.preventDefault(); keys[key] = false; };
+                el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; });
+                el.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
             };
-            setupTouch('up', 'w'); setupTouch('down', 's');
-            setupTouch('left', 'a'); setupTouch('right', 'd');
-            setupTouch('btn-run', 'shift');
+            bindTouch('up', 'w'); bindTouch('down', 's');
+            bindTouch('left', 'a'); bindTouch('right', 'd');
+            bindTouch('jump-btn', 'space'); bindTouch('run-btn', 'shift');
 
             animate();
         }
@@ -167,29 +157,54 @@
             if (isGameOver) return;
             requestAnimationFrame(animate);
 
-            let moveSpeed = keys.shift ? playerSpeed * 1.8 : playerSpeed;
+            let currentSpeed = keys.shift ? playerSpeed * 1.8 : playerSpeed;
             let oldPos = player.position.clone();
 
-            if (keys.w) player.position.z -= moveSpeed;
-            if (keys.s) player.position.z += moveSpeed;
-            if (keys.a) player.position.x -= moveSpeed;
-            if (keys.d) player.position.x += moveSpeed;
+            // Yatay Hareket
+            if (keys.w) player.position.z -= currentSpeed;
+            if (keys.s) player.position.z += currentSpeed;
+            if (keys.a) player.position.x -= currentSpeed;
+            if (keys.d) player.position.x += currentSpeed;
 
-            // Çarpışma ve Sınır Kontrolü
+            // --- ZIPLAMA VE YERÇEKİMİ ---
+            if (keys.space && isGrounded) {
+                playerVelocityY = jumpForce;
+                isGrounded = false;
+            }
+
+            player.position.y += playerVelocityY;
+            
+            if (!isGrounded) {
+                playerVelocityY -= gravity; // Yerçekimi uygula
+            }
+
+            // Yere iniş kontrolü
+            if (player.position.y <= 0) {
+                player.position.y = 0;
+                playerVelocityY = 0;
+                isGrounded = true;
+            }
+
+            // Çarpışma Kontrolü (Sadece yerdeyken daha hassas)
             obstacles.forEach(obs => {
-                if (player.position.distanceTo(obs.position) < 1.5) player.position.copy(oldPos);
+                if (player.position.distanceTo(obs.position) < 2) {
+                    player.position.x = oldPos.x;
+                    player.position.z = oldPos.z;
+                }
             });
 
             // Kamera Takibi
-            camera.position.set(player.position.x, player.position.y + 4, player.position.z + 7);
+            camera.position.set(player.position.x, player.position.y + 5, player.position.z + 8);
             camera.lookAt(player.position);
 
-            // Düşman Takibi
+            // Düşman Takibi (Yaratık her zaman yerde kalır)
             let dir = new THREE.Vector3().subVectors(player.position, enemy.position).normalize();
-            enemy.position.add(dir.multiplyScalar(enemySpeed));
-            enemy.lookAt(player.position);
+            enemy.position.x += dir.x * enemySpeed;
+            enemy.position.z += dir.z * enemySpeed;
+            enemy.lookAt(player.position.x, 1.5, player.position.z);
 
-            if (player.position.distanceTo(enemy.position) < 1.2) {
+            // Yakalanma
+            if (player.position.distanceTo(enemy.position) < 1.5) {
                 isGameOver = true;
                 document.getElementById('gameover').style.display = 'block';
             }
@@ -197,12 +212,13 @@
             renderer.render(scene, camera);
         }
 
-        init();
         window.onresize = () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         };
+
+        init();
     </script>
 </body>
 </html>
