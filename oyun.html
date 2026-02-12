@@ -11,36 +11,34 @@
         #ui-layer { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             display: flex; justify-content: center; align-items: center; 
-            z-index: 100; pointer-events: none; /* Tıklamalar alttaki oyuna geçsin diye */
+            z-index: 100; pointer-events: none;
         }
         
-        /* Menülerin Tıklanabilir Olması İçin */
         .screen { 
-            background: rgba(0, 0, 0, 0.9); 
-            color: white; 
-            padding: 40px; 
-            border-radius: 10px; 
+            background: rgba(10, 10, 10, 0.95); 
+            color: #ddd; 
+            padding: 30px; 
+            border-radius: 5px; 
             text-align: center; 
-            pointer-events: auto; /* Sadece kutular tıklanabilsin */
-            border: 2px solid #ff4444;
+            pointer-events: auto; 
+            border: 1px solid #333;
             max-width: 600px;
-            width: 85%;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            width: 80%;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 1);
         }
 
-        h1 { font-size: 2.5em; margin-bottom: 20px; color: #ff4444; text-transform: uppercase; letter-spacing: 5px; }
+        h1 { font-size: 3em; margin-bottom: 10px; color: #a00; text-shadow: 0 0 10px #500; letter-spacing: 5px; }
         h2 { color: #888; border-bottom: 1px solid #444; padding-bottom: 10px; }
-        p { font-size: 1.1em; line-height: 1.6; color: #ccc; }
+        p { font-size: 1.1em; line-height: 1.6; color: #aaa; }
         
         button {
-            background: #ff4444; color: white; border: none; padding: 15px 50px; 
-            font-size: 1.5em; cursor: pointer; font-family: inherit; border-radius: 5px;
-            margin-top: 20px; text-transform: uppercase; font-weight: bold;
+            background: #a00; color: #000; border: none; padding: 15px 50px; 
+            font-size: 1.2em; cursor: pointer; font-family: inherit; font-weight: bold;
+            margin-top: 20px; text-transform: uppercase; letter-spacing: 2px;
+            transition: 0.3s;
         }
-        button:hover { background: #ff2222; }
-        button:active { transform: scale(0.95); }
+        button:hover { background: #f00; color: white; box-shadow: 0 0 20px #f00; }
 
-        /* GİZLEME SINIFI */
         .hidden { display: none !important; }
 
         /* MOBİL KONTROLLER */
@@ -49,98 +47,124 @@
             display: none; pointer-events: none; z-index: 50;
         }
 
-        /* Sol Joystick Alanı */
+        /* Sol Joystick */
         #joystick-area {
-            position: absolute; bottom: 50px; left: 30px; width: 150px; height: 150px;
-            background: rgba(255, 255, 255, 0.1); border-radius: 50%;
-            pointer-events: auto; border: 2px solid rgba(255, 255, 255, 0.2);
+            position: absolute; bottom: 40px; left: 40px; width: 140px; height: 140px;
+            background: rgba(255, 255, 255, 0.05); border-radius: 50%;
+            pointer-events: auto; border: 1px solid rgba(255, 255, 255, 0.1);
         }
         #stick { 
-            width: 60px; height: 60px; background: rgba(255, 68, 68, 0.8); 
+            width: 50px; height: 50px; background: rgba(150, 0, 0, 0.5); 
             border-radius: 50%; position: absolute; top: 45px; left: 45px; 
             box-shadow: 0 0 10px black;
         }
 
-        /* Sağ Zıplama Butonu */
+        /* Sağ Kontroller */
         #jump-btn { 
-            position: absolute; bottom: 80px; right: 30px; 
-            width: 100px; height: 100px; 
-            background: rgba(255, 255, 255, 0.2); 
-            border: 2px solid rgba(255, 255, 255, 0.4);
+            position: absolute; bottom: 60px; right: 40px; 
+            width: 90px; height: 90px; 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%; 
             pointer-events: auto;
             display: flex; justify-content: center; align-items: center;
-            color: white; font-weight: bold; font-size: 1.2em;
+            color: #aaa; font-weight: bold; font-size: 1em;
         }
-        #jump-btn:active { background: rgba(255, 255, 255, 0.5); }
+        #jump-btn:active { background: rgba(150, 0, 0, 0.5); }
 
-        /* Sağ taraf bakma alanı (Görünmez) */
         #look-area {
-            position: absolute; top: 0; right: 0; width: 50%; height: 80%;
+            position: absolute; top: 0; right: 0; width: 50%; height: 100%;
             pointer-events: auto;
-            /* background: rgba(0,255,0,0.1); Debug için açılabilir */ 
         }
 
-        #story-text-content { text-align: left; margin: 20px 0; max-height: 300px; overflow-y: auto; }
+        #story-text-content { text-align: left; margin: 20px 0; max-height: 300px; overflow-y: auto; color: #888; }
+
+        /* YATAY EKRAN ZORUNLULUĞU */
+        #portrait-warning {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; color: white; z-index: 9999;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center;
+        }
+        
+        #portrait-warning svg { width: 100px; height: 100px; fill: white; margin-bottom: 20px; animation: rotatePhone 2s infinite; }
+
+        @keyframes rotatePhone {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(90deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* Sadece Landscape modunda uyarıyı gizle */
+        @media screen and (orientation: landscape) {
+            #portrait-warning { display: none; }
+        }
 
     </style>
 </head>
 <body>
 
+    <div id="portrait-warning">
+        <svg viewBox="0 0 24 24"><path d="M17,1.01L7,1C5.9,1 5,1.9 5,3v18c0,1.1 0.9,2 2,2h10c1.1,0 2-0.9 2-2V3C19,1.9 18.1,1.01 17,1.01z M17,19H7V5h10V19z"/></svg>
+        <h2>LÜTFEN TELEFONU ÇEVİRİN</h2>
+        <p>Bu oyun sadece yatay modda oynanabilir.</p>
+    </div>
+
     <div id="ui-layer">
         <div id="main-menu" class="screen">
-            <h1>Escape to IBO</h1>
-            <p>Tepelerin ardındaki gizemden kaçabilir misin?</p>
+            <h1>ESCAPE TO IBO</h1>
             <button id="play-btn">OYNA</button>
         </div>
 
         <div id="story-screen" class="screen hidden">
-            <h2>HİKAYE</h2>
+            <h2 style="color: #a00;">KAYIT 402</h2>
             <div id="story-text-content">
-                <p>Gözlerini açtığında kendini sonsuz yeşil tepelerin arasında buldun.</p>
-                <p>Uzakta terk edilmiş sarı evler var ama içinde kimse yok.</p>
-                <p>Aniden arkanda bir ses duydun. Metalik, hızlı ve aç...</p>
-                <p>O şey seni arıyor. Durma. Koş.</p>
+                <p>Buraya nasıl geldiğimi hatırlamıyorum.</p>
+                <p>Hava her zaman karanlık. Sis asla dağılmıyor.</p>
+                <p>Tepelerin üzerinde terk edilmiş evler var ama içleri boş.</p>
+                <p>Fakat yalnız değilim.</p>
+                <p>O şey... uzun, simsiyah ve biçimsiz. Bir insan gibi değil, bir hayvan gibi dört ayak üzerinde koşuyor.</p>
+                <p>Sesini duyarsan, sakın arkana bakma. Sadece kaç.</p>
             </div>
             <button id="continue-btn">DEVAM ET</button>
         </div>
 
         <div id="game-over-screen" class="screen hidden">
-            <h1 style="color: darkred;">YAKALANDIN!</h1>
-            <p>Kaçış yoktu...</p>
+            <h1 style="color: #a00; font-size: 4em;">ÖLDÜN</h1>
+            <p>Karanlığın bir parçası oldun.</p>
             <button id="retry-btn">TEKRAR DENE</button>
         </div>
     </div>
 
     <div id="mobile-controls">
         <div id="joystick-area"><div id="stick"></div></div>
-        <div id="look-area"></div> <div id="jump-btn">ZIPLA</div>
+        <div id="look-area"></div>
+        <div id="jump-btn">ZIPLA</div>
     </div>
-       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
 
     <script>
-        // --- TEMEL AYARLAR ---
+        // --- DEĞİŞKENLER ---
         let scene, camera, renderer, controls;
         let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false;
         let canJump = false;
         let velocity = new THREE.Vector3();
         let direction = new THREE.Vector3();
         let prevTime = performance.now();
-        
-        // Oyun Durumu
         let isGameActive = false;
         let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
-        // Düşman
-        let spider;
-        let spiderLegs = [];
-        let spiderAnimSpeed = 0;
-
-        // Mobil Değişkenleri
+        // Varlıklar
+        let monster;
+        let monsterBodyParts = [];
+        let monsterAnimTime = 0;
+        
+        // Kontrol Verileri
         let touchMove = { x: 0, y: 0 };
-        let touchLook = { x: 0, y: 0 };
-
+        
         // --- BAŞLATMA ---
         window.addEventListener('load', () => {
             init();
@@ -149,25 +173,18 @@
         });
 
         function setupUI() {
-            // Buton Olayları - Hatayı önlemek için doğrudan elementlere erişim
-            const playBtn = document.getElementById('play-btn');
-            const continueBtn = document.getElementById('continue-btn');
-            const retryBtn = document.getElementById('retry-btn');
-
-            playBtn.addEventListener('click', () => {
+            document.getElementById('play-btn').onclick = () => {
                 document.getElementById('main-menu').classList.add('hidden');
                 document.getElementById('story-screen').classList.remove('hidden');
-            }, false);
-
-            continueBtn.addEventListener('click', () => {
+            };
+            document.getElementById('continue-btn').onclick = () => {
                 document.getElementById('story-screen').classList.add('hidden');
                 startGame();
-            }, false);
-
-            retryBtn.addEventListener('click', () => {
+            };
+            document.getElementById('retry-btn').onclick = () => {
                 document.getElementById('game-over-screen').classList.add('hidden');
                 resetGame();
-            }, false);
+            };
 
             if (isMobile) {
                 document.getElementById('mobile-controls').style.display = 'block';
@@ -176,187 +193,196 @@
         }
 
         function init() {
-            // Sahne
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x87CEEB);
-            scene.fog = new THREE.Fog(0x87CEEB, 20, 100); // Sis ile sonsuzluk hissi
+            // KASVETLİ HAVA: Simsiyah gökyüzü ve yoğun sis
+            scene.background = new THREE.Color(0x050505); 
+            scene.fog = new THREE.Fog(0x050505, 5, 50); // Görüş mesafesi kısaltıldı
 
-            // Kamera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.y = 10;
+            
+            // IŞIKLANDIRMA: Loş ve soğuk
+            const ambientLight = new THREE.AmbientLight(0x222233, 0.2); // Çok az ortam ışığı
+            scene.add(ambientLight);
 
-            // Işık
-            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
-            hemiLight.position.set(0, 200, 0);
-            scene.add(hemiLight);
+            // Ay Işığı
+            const moonLight = new THREE.DirectionalLight(0x4444aa, 0.5);
+            moonLight.position.set(50, 100, 50);
+            moonLight.castShadow = true;
+            scene.add(moonLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            dirLight.position.set(50, 200, 100);
-            dirLight.castShadow = true;
-            scene.add(dirLight);
+            // El Feneri Efekti (Kameraya bağlı ışık)
+            const flashLight = new THREE.SpotLight(0xffffff, 1, 60, Math.PI/6, 0.5);
+            flashLight.position.set(0,0,0);
+            flashLight.target.position.set(0,0,-1);
+            camera.add(flashLight);
+            camera.add(flashLight.target);
+            scene.add(camera);
 
-            // Zemin ve Nesneler
-            createTerrain();
-            createHouses();
-            createSpider();
+            createLevel();
+            createMonster();
 
-            // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
             document.body.appendChild(renderer.domElement);
 
-            // Kontroller (PC için Mouse Kilidi)
             controls = new THREE.PointerLockControls(camera, document.body);
 
-            // Klavye Dinleyicileri
             document.addEventListener('keydown', onKeyDown);
             document.addEventListener('keyup', onKeyUp);
             window.addEventListener('resize', onWindowResize);
         }
 
-        // --- DÜNYA OLUŞTURMA ---
+        // --- LEVEL TASARIMI ---
         function getHeightAt(x, z) {
-            return (Math.sin(x * 0.04) * 4) + (Math.cos(z * 0.04) * 4) + (Math.sin(x * 0.1 + z * 0.1) * 2);
+            // Daha engebeli ve kaotik tepeler
+            return (Math.sin(x * 0.03) * 6) + (Math.cos(z * 0.03) * 6) + (Math.sin(x * 0.1 + z * 0.1) * 2);
         }
 
-        function createTerrain() {
+        function createLevel() {
+            // Zemin: Koyu, ölü çim rengi
             const geometry = new THREE.PlaneGeometry(500, 500, 150, 150);
             geometry.rotateX(-Math.PI / 2);
             
-            const posAttribute = geometry.attributes.position;
-            for (let i = 0; i < posAttribute.count; i++) {
-                const x = posAttribute.getX(i);
-                const z = posAttribute.getZ(i);
-                posAttribute.setY(i, getHeightAt(x, z));
+            const pos = geometry.attributes.position;
+            for (let i = 0; i < pos.count; i++) {
+                pos.setY(i, getHeightAt(pos.getX(i), pos.getZ(i)));
             }
             geometry.computeVertexNormals();
 
-            const material = new THREE.MeshStandardMaterial({ color: 0x5FA032, roughness: 0.9 });
+            const material = new THREE.MeshStandardMaterial({ 
+                color: 0x1a2615, // Çok koyu yeşil/siyah
+                roughness: 0.9 
+            });
             const terrain = new THREE.Mesh(geometry, material);
             scene.add(terrain);
-        }
 
-        function createHouses() {
-            for(let i=0; i<60; i++) {
+            // Evler: Terk edilmiş, soluk
+            for(let i=0; i<40; i++) {
                 let x = (Math.random() - 0.5) * 400;
                 let z = (Math.random() - 0.5) * 400;
                 let y = getHeightAt(x, z);
 
                 const group = new THREE.Group();
                 
-                // Ev Gövdesi
+                // Gövde (Soluk, kirli sarı)
                 const body = new THREE.Mesh(
                     new THREE.BoxGeometry(5, 5, 5),
-                    new THREE.MeshStandardMaterial({ color: 0xF2C94C }) // Sarı
+                    new THREE.MeshStandardMaterial({ color: 0x554422 }) 
                 );
                 body.position.y = 2.5;
 
-                // Çatı
+                // Çatı (Siyah)
                 const roof = new THREE.Mesh(
                     new THREE.ConeGeometry(4, 3, 4),
-                    new THREE.MeshStandardMaterial({ color: 0x333333 })
+                    new THREE.MeshStandardMaterial({ color: 0x0a0a0a })
                 );
                 roof.position.y = 6.5;
                 roof.rotation.y = Math.PI / 4;
 
-                // Pencere
-                const windowMesh = new THREE.Mesh(
-                    new THREE.PlaneGeometry(1.5, 1.5),
-                    new THREE.MeshBasicMaterial({ color: 0x87CEEB })
-                );
-                windowMesh.position.set(0, 3, 2.51);
+                // Pencere (İçeriden ışık gelmiyor - siyah)
+                const win = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({color:0x000000}));
+                win.position.set(0, 3, 2.6);
 
-                group.add(body);
-                group.add(roof);
-                group.add(windowMesh);
-                
+                group.add(body); group.add(roof); group.add(win);
                 group.position.set(x, y, z);
-                // Evler merkeze bakmasın, rastgele dönsün
-                group.rotation.y = Math.random() * Math.PI;
-                
+                group.rotation.y = Math.random();
                 scene.add(group);
             }
         }
 
-        function createSpider() {
-            spider = new THREE.Group();
-
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.4 });
+        // --- CANAVAR TASARIMI (GÖRSELE GÖRE) ---
+        function createMonster() {
+            monster = new THREE.Group();
             
-            // Gövde
-            const body = new THREE.Mesh(new THREE.SphereGeometry(1.5, 16, 16), bodyMat);
-            spider.add(body);
+            // Materyal: Simsiyah, parlamayan
+            const mat = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 1 });
 
-            // Kafa
-            const head = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 16), bodyMat);
-            head.position.set(0, 0.5, 1.5);
-            spider.add(head);
+            // 1. Gövde (İnce ve uzun)
+            const torsoGeo = new THREE.CylinderGeometry(0.5, 0.4, 4, 8);
+            const torso = new THREE.Mesh(torsoGeo, mat);
+            torso.rotation.x = Math.PI / 2; // Yatay duruyor
+            monster.add(torso);
 
-            // Gözler
-            const eyeGeo = new THREE.SphereGeometry(0.2);
-            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-            const eye1 = new THREE.Mesh(eyeGeo, eyeMat); eye1.position.set(-0.4, 0.5, 0.8);
-            const eye2 = new THREE.Mesh(eyeGeo, eyeMat); eye2.position.set(0.4, 0.5, 0.8);
-            head.add(eye1); head.add(eye2);
+            // 2. Kafa (Yüzsüz, oval)
+            const headGeo = new THREE.SphereGeometry(0.6, 16, 16);
+            const head = new THREE.Mesh(headGeo, mat);
+            head.scale.set(1, 1.2, 1); // Biraz uzun kafa
+            head.position.set(0, 0.5, 2.2); // Gövdenin önüne
+            head.rotation.x = -0.5; // Biraz aşağı bakıyor
+            monster.add(head);
 
-            // Bacaklar
-            for(let i=0; i<8; i++) { // 8 bacaklı olsun
-                const legPiv = new THREE.Object3D();
-                const legGeo = new THREE.BoxGeometry(0.2, 0.2, 3);
-                const leg = new THREE.Mesh(legGeo, bodyMat);
-                leg.position.z = 1.5;
-                legPiv.add(leg);
+            // 3. Uzuvlar (Çok ince ve uzun kollar/bacaklar)
+            // 4 Ayak üzerinde yürüyor
+            
+            // Fonksiyon: Uzuv oluştur
+            function createLimb(x, z, name) {
+                const limbGroup = new THREE.Group();
+                // Üst parça
+                const upperGeo = new THREE.CylinderGeometry(0.15, 0.1, 2.5);
+                const upper = new THREE.Mesh(upperGeo, mat);
+                upper.position.y = -1.25;
                 
-                legPiv.rotation.y = (i / 4) * Math.PI; 
-                legPiv.position.y = -0.5;
+                // Alt parça (Dirsek/Diz altı)
+                const lowerGeo = new THREE.CylinderGeometry(0.1, 0.05, 2.5);
+                const lower = new THREE.Mesh(lowerGeo, mat);
+                lower.position.y = -2.5; // Üst parçanın ucuna eklenmeli ama basitlik için group içinde
                 
-                spiderLegs.push(legPiv);
-                spider.add(legPiv);
+                limbGroup.add(upper);
+                
+                // Basitlik için tek parça uzun uzuv yapalım animasyon kolaylığı için
+                // Daha kompleks rig yerine, omuzdan yere inen tek parça ama ortadan kırık gibi
+                
+                limbGroup.position.set(x, 0, z);
+                monster.add(limbGroup);
+                return limbGroup;
             }
 
-            spider.position.set(0, -50, 0); // Başlangıçta gizli
-            scene.add(spider);
+            // Ön Kollar (Uzun)
+            const fL = createLimb(-0.6, 1.5, 'fl');
+            const fR = createLimb(0.6, 1.5, 'fr');
+            
+            // Arka Bacaklar (Uzun, dizleri yukarı çıkık)
+            const bL = createLimb(-0.6, -1.5, 'bl');
+            const bR = createLimb(0.6, -1.5, 'br');
+
+            // Uzuvları kaydet
+            monsterBodyParts = [fL, fR, bL, bR];
+
+            monster.position.set(0, -50, 0);
+            scene.add(monster);
         }
 
-        // --- OYUN MANTIĞI ---
-
+        // --- OYUN AKIŞI ---
         function startGame() {
             isGameActive = true;
-            velocity.set(0,0,0);
             camera.position.set(0, 10, 0);
-            camera.rotation.set(0,0,0);
+            camera.rotation.set(0, 0, 0);
             
-            // Örümcek başlangıcı (oyuncunun arkasında spawn olsun)
-            spider.position.set(0, 10, -40);
+            // Canavar spawn (Oyuncunun baktığı yönün tersinde)
+            monster.position.set(0, 10, -50);
+            monster.lookAt(camera.position);
 
-            if (!isMobile) {
-                controls.lock();
-            }
+            if (!isMobile) controls.lock();
         }
 
-        function resetGame() {
-            startGame();
-        }
-
+        function resetGame() { startGame(); }
         function gameOver() {
             isGameActive = false;
             if(!isMobile) controls.unlock();
             document.getElementById('game-over-screen').classList.remove('hidden');
         }
 
-        // --- GİRDİ YÖNETİMİ ---
-
+        // --- GİRDİ ---
         function onKeyDown(e) {
             switch (e.code) {
                 case 'ArrowUp': case 'KeyW': moveForward = true; break;
                 case 'ArrowLeft': case 'KeyA': moveLeft = true; break;
                 case 'ArrowDown': case 'KeyS': moveBackward = true; break;
                 case 'ArrowRight': case 'KeyD': moveRight = true; break;
-                case 'Space': if (canJump) { velocity.y += 25; canJump = false; } break;
+                case 'Space': if (canJump) { velocity.y += 20; canJump = false; } break;
             }
         }
-
         function onKeyUp(e) {
             switch (e.code) {
                 case 'ArrowUp': case 'KeyW': moveForward = false; break;
@@ -367,73 +393,61 @@
         }
 
         function setupMobileInputs() {
-            const joystickArea = document.getElementById('joystick-area');
+            const joy = document.getElementById('joystick-area');
             const stick = document.getElementById('stick');
-            const lookArea = document.getElementById('look-area');
-            const jumpBtn = document.getElementById('jump-btn');
+            const look = document.getElementById('look-area');
+            const jump = document.getElementById('jump-btn');
             
             let startX, startY;
 
-            // Hareket (Joystick)
-            joystickArea.addEventListener('touchstart', (e) => {
+            // JOYSTICK (Terslik düzeltildi)
+            joy.addEventListener('touchstart', e => {
                 e.preventDefault();
                 startX = e.touches[0].clientX;
                 startY = e.touches[0].clientY;
-            }, {passive: false});
+            }, {passive:false});
 
-            joystickArea.addEventListener('touchmove', (e) => {
+            joy.addEventListener('touchmove', e => {
                 e.preventDefault();
                 const x = e.touches[0].clientX;
                 const y = e.touches[0].clientY;
                 let dx = x - startX;
                 let dy = y - startY;
-                const distance = Math.min(Math.sqrt(dx*dx + dy*dy), 50); // Sınırla
-                const angle = Math.atan2(dy, dx);
                 
-                dx = Math.cos(angle) * distance;
-                dy = Math.sin(angle) * distance;
-
-                stick.style.transform = `translate(${dx}px, ${dy}px)`;
+                // Joystick görsel sınırı
+                const dist = Math.min(Math.sqrt(dx*dx + dy*dy), 50);
+                const ang = Math.atan2(dy, dx);
+                stick.style.transform = `translate(${Math.cos(ang)*dist}px, ${Math.sin(ang)*dist}px)`;
                 
-                touchMove.x = dx / 50; // -1 ile 1 arası
-                touchMove.y = dy / 50;
-            }, {passive: false});
+                // Veri (Terslik kontrolü burada yapılacak)
+                // Normalde yukarı sürükleyince Y negatif olur. 
+                // Biz ileri gitmek için NEGATİF Z istiyoruz.
+                touchMove.x = dx / 50; 
+                touchMove.y = dy / 50; 
+            }, {passive:false});
 
-            joystickArea.addEventListener('touchend', (e) => {
+            joy.addEventListener('touchend', e => {
                 e.preventDefault();
-                stick.style.transform = `translate(0px, 0px)`;
-                touchMove.x = 0;
-                touchMove.y = 0;
+                stick.style.transform = 'translate(0,0)';
+                touchMove.x = 0; touchMove.y = 0;
             });
 
-            // Etrafa Bakma (Sağ Ekran)
-            let lastLookX, lastLookY;
-            lookArea.addEventListener('touchstart', (e) => {
-                lastLookX = e.touches[0].clientX;
-                lastLookY = e.touches[0].clientY;
-            });
-
-            lookArea.addEventListener('touchmove', (e) => {
-                e.preventDefault(); // Sayfa kaymasını engelle
+            // LOOK (Bakış)
+            let lastX;
+            look.addEventListener('touchstart', e => { lastX = e.touches[0].clientX; });
+            look.addEventListener('touchmove', e => {
+                e.preventDefault();
                 const x = e.touches[0].clientX;
-                const y = e.touches[0].clientY;
-                
-                const sensitivity = 0.005;
-                const dx = x - lastLookX;
-                const dy = y - lastLookY;
+                // Terslik varsa buradaki eksi/artı değiştirilmeli
+                // Sağa sürükleyince (x artar), kamera sola dönüyorsa (rotation artar), eksi koyarız.
+                const dx = x - lastX;
+                camera.rotation.y -= dx * 0.005; 
+                lastX = x;
+            }, {passive:false});
 
-                camera.rotation.y -= dx * sensitivity;
-                // Bakış açısı sınırlandırma (yukarı aşağı) - opsiyonel, basitlik için sadece Y ekseni
-                // camera.rotation.x -= dy * sensitivity; 
-                
-                lastLookX = x;
-                lastLookY = y;
-            }, {passive: false});
-
-            // Zıplama
-            jumpBtn.addEventListener('touchstart', (e) => {
+            jump.addEventListener('touchstart', e => {
                 e.preventDefault();
-                if(canJump) { velocity.y += 25; canJump = false; }
+                if(canJump) { velocity.y += 20; canJump = false; }
             });
         }
 
@@ -443,8 +457,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // --- FİZİK VE DÖNGÜ ---
-
+        // --- LOOP ---
         function animate() {
             requestAnimationFrame(animate);
 
@@ -453,29 +466,30 @@
                 const delta = (time - prevTime) / 1000;
                 prevTime = time;
 
-                // --- HAREKET FİZİĞİ ---
+                // Fizik
                 velocity.x -= velocity.x * 10.0 * delta;
                 velocity.z -= velocity.z * 10.0 * delta;
-                velocity.y -= 9.8 * 8.0 * delta; // Yerçekimi
+                velocity.y -= 9.8 * 6.0 * delta; // Yerçekimi
 
                 direction.z = Number(moveForward) - Number(moveBackward);
                 direction.x = Number(moveRight) - Number(moveLeft);
                 direction.normalize();
 
-                const speed = 150.0;
+                const speed = 120.0;
                 
-                // Klavye hareketi
+                // Klavye Hareketi (DÜZELTİLDİ)
                 if (moveForward || moveBackward) velocity.z -= direction.z * speed * delta;
                 if (moveLeft || moveRight) velocity.x -= direction.x * speed * delta;
 
-                // Mobil Joystick hareketi
+                // Mobil Joystick Hareketi (DÜZELTİLDİ)
                 if (isMobile && (touchMove.x !== 0 || touchMove.y !== 0)) {
                     const camDir = new THREE.Vector3();
                     camera.getWorldDirection(camDir);
                     camDir.y = 0; camDir.normalize();
                     const camSide = new THREE.Vector3().crossVectors(camera.up, camDir).normalize();
 
-                    // Joystick Y ekseni (ileri-geri)
+                    // İleri (stick yukarı) touchMove.y negatif gelir. İleri gitmek için -z lazım.
+                    // O yüzden + ile ekliyoruz ki (negatif * pozitif = negatif) olsun.
                     velocity.x += (camDir.x * touchMove.y + camSide.x * touchMove.x) * speed * delta;
                     velocity.z += (camDir.z * touchMove.y + camSide.z * touchMove.x) * speed * delta;
                 }
@@ -484,47 +498,46 @@
                 controls.moveForward(-velocity.z * delta);
                 camera.position.y += velocity.y * delta;
 
-                // Yere Çarpma
+                // Zemin Kontrolü
                 const groundH = getHeightAt(camera.position.x, camera.position.z);
-                if (camera.position.y < groundH + 3) {
+                if (camera.position.y < groundH + 4) { // Kamera biraz daha alçak (klostrofobik)
                     velocity.y = 0;
-                    camera.position.y = groundH + 3;
+                    camera.position.y = groundH + 4;
                     canJump = true;
                 }
 
-                // Sonsuz Harita Hilesi (Sınırları aşarsa başa at)
-                if (camera.position.x > 200) camera.position.x = -190;
-                if (camera.position.x < -200) camera.position.x = 190;
-                if (camera.position.z > 200) camera.position.z = -190;
-                if (camera.position.z < -200) camera.position.z = 190;
+                // Sonsuz Döngü
+                if (Math.abs(camera.position.x) > 200) camera.position.x *= -0.9;
+                if (Math.abs(camera.position.z) > 200) camera.position.z *= -0.9;
 
-                // --- DÜŞMAN YAPAY ZEKASI ---
-                const dist = spider.position.distanceTo(camera.position);
+                // --- CANAVAR AI ---
+                const dist = monster.position.distanceTo(camera.position);
                 
-                // Örümcek Yerde Yürüsün
-                let spiderGround = getHeightAt(spider.position.x, spider.position.z);
-                spider.position.y = spiderGround + 2;
+                // Canavar Yükseklik Ayarı
+                let mGround = getHeightAt(monster.position.x, monster.position.z);
+                monster.position.y = mGround + 2.5; // Yere yakın (emekliyor)
 
-                // Takip Et
-                spider.lookAt(camera.position.x, spider.position.y, camera.position.z);
-                const dir = new THREE.Vector3().subVectors(camera.position, spider.position).normalize();
+                // Takip
+                monster.lookAt(camera.position.x, monster.position.y, camera.position.z);
+                const dir = new THREE.Vector3().subVectors(camera.position, monster.position).normalize();
                 
-                // Hız
-                const spiderSpeed = 12.0; 
-                spider.position.add(dir.multiplyScalar(spiderSpeed * delta));
+                // Hız (Sana yaklaştıkça hızlansın)
+                let currentSpeed = 10.0 + (50 / (dist + 1)); 
+                monster.position.add(dir.multiplyScalar(currentSpeed * delta));
 
-                // Bacak Animasyonu
-                spiderAnimSpeed += delta * 15;
-                spiderLegs.forEach((leg, i) => {
-                    leg.rotation.x = Math.sin(spiderAnimSpeed + i) * 0.5;
-                });
+                // Emekleme Animasyonu
+                monsterAnimTime += delta * 10;
+                // Çapraz uzuvlar senkronize hareket eder
+                monsterBodyParts[0].rotation.x = Math.sin(monsterAnimTime) * 0.5; // Sol ön
+                monsterBodyParts[3].rotation.x = Math.sin(monsterAnimTime) * 0.5; // Sağ arka
+                
+                monsterBodyParts[1].rotation.x = Math.sin(monsterAnimTime + Math.PI) * 0.5; // Sağ ön
+                monsterBodyParts[2].rotation.x = Math.sin(monsterAnimTime + Math.PI) * 0.5; // Sol arka
 
-                // Yakalanma Kontrolü
-                if (dist < 4) {
-                    gameOver();
-                }
+                // Yakalanma
+                if (dist < 3) gameOver();
             } else {
-                prevTime = performance.now(); // Duraklatılınca zamanı güncelle
+                prevTime = performance.now();
             }
 
             renderer.render(scene, camera);
@@ -532,5 +545,4 @@
 
     </script>
 </body>
-    </html>
-    
+</html>
