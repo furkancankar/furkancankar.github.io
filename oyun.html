@@ -114,7 +114,7 @@
 
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-            // --- IŞIKLANDIRMA GÜNCELLEMESİ ---
+            // --- IŞIKLANDIRMA ---
             
             // 1. Ortam Işığı (Hafifçe her yeri aydınlatır)
             const ambient = new THREE.AmbientLight(0x404060, 0.4); 
@@ -221,7 +221,7 @@
             const body = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 3.5), mat);
             monster.add(body);
 
-            // Kafa (Parlayan göz efekti eklenebilir ama şimdilik gizemli kalsın)
+            // Kafa
             const head = new THREE.Mesh(new THREE.SphereGeometry(0.7), mat);
             head.position.set(0, 0.8, 2);
             monster.add(head);
@@ -280,7 +280,10 @@
             scoreEl.style.display = 'block';
             camera.position.set(0, 15, 0);
             camera.rotation.set(0,0,0);
-            monster.position.set(0, 10, -60);
+            
+            // DÜZELTME: Canavarı daha uzağa yerleştir
+            monster.position.set(0, 10, -100); // Başlangıç mesafesi arttı
+            
             velocity.set(0,0,0);
             if(!isMob) controls.lock();
         }
@@ -322,7 +325,8 @@
                 }
                 if (Math.abs(camera.position.z) > 250) {
                     camera.position.z = 0;
-                    monster.position.z = -50; // Canavarı tekrar arkaya al
+                    // Canavarı da aradaki mesafeyi koruyarak taşı
+                    monster.position.z = camera.position.distanceTo(monster.position) * -1;
                 }
 
                 // Yükseklik Kontrolü
@@ -337,8 +341,9 @@
                 monster.lookAt(camera.position.x, monster.position.y, camera.position.z);
                 const dir = new THREE.Vector3().subVectors(camera.position, monster.position).normalize();
                 
-                // Canavar hızı oyuncudan %5 yavaş başlar ama çarpanla artar
-                const monsterSpeed = (baseSpeed * 0.95); 
+                // DÜZELTME: Canavar başlangıçta daha yavaş
+                // Başlangıçta oyuncu hızının %70'i ile başlar, zamanla oyuncu hızına yaklaşır ama geçmez
+                const monsterSpeed = baseSpeed * Math.min(0.95, (0.7 + speedMultiplier * 0.1));
                 monster.position.add(dir.multiplyScalar(monsterSpeed * delta));
                 
                 // Canavarın araziye uyumu
@@ -347,6 +352,7 @@
 
                 // Animasyon
                 monsterParts.forEach((leg, i) => {
+                    // Bacak animasyonu da canavar hızıyla orantılı hızlansın
                     leg.rotation.x = Math.sin(time * 0.015 * speedMultiplier + i) * 0.8;
                 });
 
