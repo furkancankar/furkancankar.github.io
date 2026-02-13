@@ -3,39 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Escape to IBO - Survival</title>
+    <title>Escape to IBO - The Light Update</title>
     <style>
         body { margin: 0; overflow: hidden; font-family: 'Courier New', Courier, monospace; background-color: #000; user-select: none; -webkit-user-select: none; }
+        
+        /* ARAYÜZ KATMANLARI */
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 100; pointer-events: none; }
-        .screen { background: rgba(10, 10, 10, 0.98); color: #ddd; padding: 30px; border-radius: 5px; text-align: center; pointer-events: auto; border: 1px solid #500; max-width: 600px; width: 85%; box-shadow: 0 0 50px #100; }
-        h1 { font-size: 3em; margin-bottom: 10px; color: #a00; text-shadow: 0 0 15px #f00; letter-spacing: 5px; }
-        button { background: #700; color: #fff; border: none; padding: 15px 50px; font-size: 1.2em; cursor: pointer; font-family: inherit; font-weight: bold; margin-top: 20px; transition: 0.3s; }
-        button:hover { background: #f00; box-shadow: 0 0 20px #f00; }
+        
+        /* PENCERELER */
+        .screen { 
+            background: rgba(10, 15, 20, 0.95); 
+            color: #ddd; 
+            padding: 30px; 
+            border-radius: 8px; 
+            text-align: center; 
+            pointer-events: auto; 
+            border: 2px solid #45a; 
+            max-width: 600px; 
+            width: 85%; 
+            box-shadow: 0 0 40px rgba(0,100,255,0.2); 
+        }
+
+        h1 { font-size: 3em; margin-bottom: 10px; color: #d44; text-shadow: 0 0 10px #f00; letter-spacing: 5px; }
+        h2 { color: #8af; border-bottom: 1px solid #45a; padding-bottom: 10px; }
+        
+        button { 
+            background: #235; color: #fff; border: 1px solid #45a; padding: 15px 50px; 
+            font-size: 1.2em; cursor: pointer; font-family: inherit; font-weight: bold; 
+            margin-top: 20px; transition: 0.2s; 
+        }
+        button:hover { background: #45a; box-shadow: 0 0 15px #45a; }
+        
         .hidden { display: none !important; }
-        #score-display { position: absolute; top: 20px; left: 20px; color: #fff; font-size: 1.5em; font-weight: bold; z-index: 90; text-shadow: 1px 1px 2px black; display: none; }
+
+        /* SKOR GÖSTERGESİ */
+        #score-display { 
+            position: absolute; top: 20px; left: 20px; 
+            color: #fff; font-size: 1.5em; font-weight: bold; 
+            z-index: 90; text-shadow: 2px 2px 4px black; 
+            display: none; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px;
+        }
+
+        /* MOBİL KONTROLLER */
         #mobile-controls { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none; z-index: 50; }
-        #joystick-area { position: absolute; bottom: 30px; left: 30px; width: 130px; height: 130px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; pointer-events: auto; border: 1px solid rgba(200, 0, 0, 0.3); }
-        #stick { width: 50px; height: 50px; background: rgba(200, 0, 0, 0.5); border-radius: 50%; position: absolute; top: 40px; left: 40px; }
-        #jump-btn { position: absolute; bottom: 50px; right: 40px; width: 90px; height: 90px; background: rgba(200, 0, 0, 0.2); border: 1px solid rgba(200, 0, 0, 0.4); border-radius: 50%; pointer-events: auto; display: flex; justify-content: center; align-items: center; color: #ccc; }
+        #joystick-area { position: absolute; bottom: 40px; left: 40px; width: 140px; height: 140px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; pointer-events: auto; border: 2px solid rgba(255, 255, 255, 0.1); }
+        #stick { width: 60px; height: 60px; background: rgba(100, 200, 255, 0.5); border-radius: 50%; position: absolute; top: 40px; left: 40px; box-shadow: 0 0 15px #0ff; }
+        #jump-btn { position: absolute; bottom: 60px; right: 40px; width: 100px; height: 100px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 50%; pointer-events: auto; display: flex; justify-content: center; align-items: center; color: #fff; font-weight: bold; }
+        #jump-btn:active { background: rgba(100, 200, 255, 0.4); }
         #look-area { position: absolute; top: 0; right: 0; width: 60%; height: 100%; pointer-events: auto; }
-        #portrait-warning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #f00; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+
+        /* YATAY EKRAN UYARISI */
+        #portrait-warning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #f44; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         @media screen and (orientation: landscape) { #portrait-warning { display: none; } }
     </style>
 </head>
 <body>
+
     <div id="portrait-warning"><h1>LUTFEN TELEFONU CEVIRIN</h1><p>Yatay modda oynamalisiniz.</p></div>
+    
     <div id="score-display">SKOR: 0</div>
+    
     <div id="ui-layer">
-        <div id="main-menu" class="screen"><h1>ESCAPE TO IBO</h1><button id="play-btn">OYNA</button></div>
-        <div id="story-screen" class="screen hidden">
-            <h2 style="color: #800;">HIKAYE</h2>
-            <div style="text-align: left; color: #aaa;">
-                Sis biraz aralandi ama tehlike buyuyor. Hayatta kaldikca o sey daha da hizlanacak. Sen de oyle...
-            </div>
-            <button id="continue-btn">DEVAM ET</button>
+        <div id="main-menu" class="screen">
+            <h1>ESCAPE TO IBO</h1>
+            <p style="color:#aaa">Karanlıkta yalnız değilsin.</p>
+            <button id="play-btn">OYNA</button>
         </div>
-        <div id="game-over-screen" class="screen hidden"><h1 style="color: #f00;">YAKALANDIN</h1><p id="final-score"></p><button id="retry-btn">TEKRAR DENE</button></div>
+
+        <div id="story-screen" class="screen hidden">
+            <h2>GÜNCELLEME: AYDINLIK</h2>
+            <div style="text-align: left; color: #ccc; margin: 20px 0;">
+                <p>El fenerini buldun. Artık önünü görebilirsin.</p>
+                <p>Ama dikkat et, ışık sadece yolunu değil, <b>O'nu</b> da aydınlatır.</p>
+                <p>Oyun boyunca hızlanacaksın. Asla durma.</p>
+            </div>
+            <button id="continue-btn">BAŞLA</button>
+        </div>
+
+        <div id="game-over-screen" class="screen hidden">
+            <h1 style="color: #f00;">ÖLDÜN</h1>
+            <h3 id="final-score" style="color:white;"></h3>
+            <button id="retry-btn">TEKRAR DENE</button>
+        </div>
     </div>
+
     <div id="mobile-controls">
         <div id="joystick-area"><div id="stick"></div></div>
         <div id="look-area"></div>
@@ -44,131 +95,278 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+
     <script>
         let scene, camera, renderer, controls, monster, monsterParts = [];
         let moveF = false, moveB = false, moveL = false, moveR = false, canJump = false;
         let velocity = new THREE.Vector3(), prevTime = performance.now(), isGame = false;
         let touchM = { x: 0, y: 0 }, isMob = /Android|iPhone|iPad/i.test(navigator.userAgent);
         
-        // SKOR VE HIZ DEGISKENLERI
         let score = 0;
-        const BASE_PLAYER_SPEED = 120; // Baz oyuncu hizi
-        const BASE_MONSTER_SPEED = 12;  // Baz canavar hizi
-        let speedMultiplier = 1.0;      // Hiz duzenleyici carpan
-        const scoreLabel = document.getElementById('score-display');
+        let speedMultiplier = 1.0;
+        const scoreEl = document.getElementById('score-display');
 
         function init() {
             scene = new THREE.Scene();
-            // AYDINLATMA DUZENLEMESI (Daha aydinlik sis ve arka plan)
-            scene.background = new THREE.Color(0x111111); // Zifiri karanliktan hafif griye
-            scene.fog = new THREE.Fog(0x111111, 5, 80); // Sis baslangic ve bitis mesafesi arttirildi
+            // Gökyüzü Rengi (Tam siyah değil, koyu mavi-gri)
+            scene.background = new THREE.Color(0x050510);
+            scene.fog = new THREE.FogExp2(0x050510, 0.015); // Sis yumuşatıldı
 
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            // --- IŞIKLANDIRMA GÜNCELLEMESİ ---
             
-            // ISIKLAR (Daha guclu ortam isigi + Ay isigi)
-            const amb = new THREE.AmbientLight(0x606060, 0.6); scene.add(amb); // Ortam isigi arttirildi
-            const moon = new THREE.DirectionalLight(0xaaaaff, 0.4); // Hafif mavi ay isigi eklendi
-            moon.position.set(50, 100, 50); scene.add(moon);
+            // 1. Ortam Işığı (Hafifçe her yeri aydınlatır)
+            const ambient = new THREE.AmbientLight(0x404060, 0.4); 
+            scene.add(ambient);
 
-            // El feneri (Hala var ama artik tek isik kaynagi degil)
-            const flashlight = new THREE.SpotLight(0xffffff, 0.8, 60, Math.PI/5, 0.3);
-            camera.add(flashlight); camera.add(flashlight.target); flashlight.target.position.set(0,0,-1); scene.add(camera);
+            // 2. Ay Işığı (Tepeleri belli eder)
+            const moonLight = new THREE.DirectionalLight(0x8080ff, 0.3);
+            moonLight.position.set(50, 200, 100);
+            scene.add(moonLight);
 
-            // ZEMIN
-            const floorGeo = new THREE.PlaneGeometry(600, 600, 100, 100); floorGeo.rotateX(-Math.PI / 2);
+            // 3. OYUNCU EL FENERİ (Çok güçlü spot ışık)
+            const flashlight = new THREE.SpotLight(0xffffff, 2.0); // Şiddeti 2.0 (Yüksek)
+            flashlight.position.set(0, 0, 0);
+            flashlight.distance = 80; // Menzil
+            flashlight.angle = Math.PI / 3; // Genişlik
+            flashlight.penumbra = 0.5; // Yumuşak kenarlar
+            flashlight.decay = 1;
+            
+            camera.add(flashlight);
+            camera.add(flashlight.target);
+            flashlight.target.position.set(0, 0, -1); // Işık daima ileri bakar
+            scene.add(camera);
+
+            // --- DÜNYA OLUŞTURMA ---
+
+            // Zemin (Sonsuz hissi için büyük)
+            const floorGeo = new THREE.PlaneGeometry(800, 800, 150, 150);
+            floorGeo.rotateX(-Math.PI / 2);
+            
             const pos = floorGeo.attributes.position;
-            for(let i=0; i<pos.count; i++) pos.setY(i, (Math.sin(pos.getX(i)*0.04)*6) + (Math.cos(pos.getZ(i)*0.04)*6));
-            floorGeo.computeVertexNormals();
-            scene.add(new THREE.Mesh(floorGeo, new THREE.MeshStandardMaterial({color: 0x152015, roughness: 0.8})));
-
-            // CANAVAR
-            monster = new THREE.Group();
-            const mMat = new THREE.MeshStandardMaterial({color: 0x050505, roughness: 1});
-            const body = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 3.5), mMat); monster.add(body);
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.6), mMat); head.position.set(0, 0.5, 2); monster.add(head);
-            for(let i=0; i<4; i++) {
-                let limb = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.1, 4.5), mMat);
-                limb.position.set(i<2?-0.9:0.9, -1, i%2==0?1.2:-1.2); monsterParts.push(limb); monster.add(limb);
+            for(let i=0; i<pos.count; i++) {
+                // Periyodik arazi (Sonsuz döngüde sarsılma olmaması için)
+                let x = pos.getX(i);
+                let z = pos.getZ(i);
+                // Tepeleri oluştur
+                let y = (Math.sin(x*0.05)*5) + (Math.cos(z*0.05)*5) + (Math.sin(x*0.1 + z*0.1)*2);
+                pos.setY(i, y);
             }
-            monster.position.y = -50; scene.add(monster);
+            floorGeo.computeVertexNormals();
+            
+            // Zemin Materyali (Hafif parlayan çim)
+            const floorMat = new THREE.MeshStandardMaterial({ 
+                color: 0x1a221a, 
+                roughness: 0.8,
+                metalness: 0.1
+            });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            scene.add(floor);
 
-            renderer = new THREE.WebGLRenderer({antialias: true}); renderer.setSize(window.innerWidth, window.innerHeight); document.body.appendChild(renderer.domElement);
+            // Yıldızlar (Gökyüzündeki siyahlığı kırmak için)
+            const starGeo = new THREE.BufferGeometry();
+            const starCount = 1000;
+            const starPos = new Float32Array(starCount * 3);
+            for(let i=0; i<starCount*3; i++) starPos[i] = (Math.random() - 0.5) * 600;
+            starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+            const starMat = new THREE.PointsMaterial({color: 0xffffff, size: 0.5});
+            const stars = new THREE.Points(starGeo, starMat);
+            stars.position.y = 100;
+            scene.add(stars);
+
+            // --- CANAVAR ---
+            createMonster();
+
+            renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            // Daha iyi ışık hesaplaması için
+            renderer.physicallyCorrectLights = true; 
+            document.body.appendChild(renderer.domElement);
+
             controls = new THREE.PointerLockControls(camera, document.body);
 
-            // UI GECISLERI VE BASLATMA
-            document.getElementById('play-btn').onclick = () => { document.getElementById('main-menu').classList.add('hidden'); document.getElementById('story-screen').classList.remove('hidden'); };
-            document.getElementById('continue-btn').onclick = () => { 
-                document.getElementById('story-screen').classList.add('hidden'); 
-                // Oyunu Baslat/Sifirla
-                isGame = true; score = 0; speedMultiplier = 1.0; scoreLabel.style.display = 'block';
-                camera.position.set(0,10,0); monster.position.set(0,10,-60);
-                if(!isMob) controls.lock(); 
+            // UI Butonları
+            document.getElementById('play-btn').onclick = () => {
+                document.getElementById('main-menu').classList.add('hidden');
+                document.getElementById('story-screen').classList.remove('hidden');
+            };
+            document.getElementById('continue-btn').onclick = () => {
+                document.getElementById('story-screen').classList.add('hidden');
+                resetGame();
             };
             document.getElementById('retry-btn').onclick = () => { location.reload(); };
 
-            if(isMob) setupMobileControls();
-            document.onkeydown = (e) => { if(e.code=='KeyW') moveF=true; if(e.code=='KeyS') moveB=true; if(e.code=='KeyA') moveL=true; if(e.code=='KeyD') moveR=true; if(e.code=='Space' && canJump) {velocity.y+=20; canJump=false;} };
-            document.onkeyup = (e) => { if(e.code=='KeyW') moveF=false; if(e.code=='KeyS') moveB=false; if(e.code=='KeyA') moveL=false; if(e.code=='KeyD') moveR=false; };
+            if(isMob) setupMobile();
+
+            // Klavye
+            document.addEventListener('keydown', (e) => {
+                if(e.code=='KeyW') moveF=true; if(e.code=='KeyS') moveB=true;
+                if(e.code=='KeyA') moveL=true; if(e.code=='KeyD') moveR=true;
+                if(e.code=='Space' && canJump) { velocity.y += 20; canJump = false; }
+            });
+            document.addEventListener('keyup', (e) => {
+                if(e.code=='KeyW') moveF=false; if(e.code=='KeyS') moveB=false;
+                if(e.code=='KeyA') moveL=false; if(e.code=='KeyD') moveR=false;
+            });
+
             animate();
         }
 
-        function setupMobileControls() {
+        function createMonster() {
+            monster = new THREE.Group();
+            const mat = new THREE.MeshStandardMaterial({color: 0x050505, roughness: 0.9}); // Kapkara
+
+            // Gövde
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 3.5), mat);
+            monster.add(body);
+
+            // Kafa (Parlayan göz efekti eklenebilir ama şimdilik gizemli kalsın)
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.7), mat);
+            head.position.set(0, 0.8, 2);
+            monster.add(head);
+
+            // Bacaklar
+            for(let i=0; i<4; i++) {
+                const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.1, 5), mat);
+                // Başlangıç pozisyonu
+                leg.position.set(i<2?-1:1, -1, i%2==0?1.5:-1.5);
+                monsterParts.push(leg);
+                monster.add(leg);
+            }
+            monster.position.set(0, -50, 0);
+            scene.add(monster);
+        }
+
+        function setupMobile() {
             document.getElementById('mobile-controls').style.display = 'block';
             const joy = document.getElementById('joystick-area'), st = document.getElementById('stick');
-            joy.ontouchmove = (e) => {
-                let rect = joy.getBoundingClientRect(), dx = e.touches[0].clientX - (rect.left + 65), dy = e.touches[0].clientY - (rect.top + 65);
-                let d = Math.min(Math.sqrt(dx*dx+dy*dy), 40), a = Math.atan2(dy, dx);
-                st.style.transform = `translate(${Math.cos(a)*d}px, ${Math.sin(a)*d}px)`;
-                touchM = { x: dx/40, y: dy/40 };
-            };
-            joy.ontouchend = () => { st.style.transform = 'translate(0,0)'; touchM = {x:0, y:0}; };
-            let lastLX; document.getElementById('look-area').ontouchstart = (e) => { lastLX = e.touches[0].clientX; };
-            document.getElementById('look-area').ontouchmove = (e) => { camera.rotation.y -= (e.touches[0].clientX - lastLX) * 0.007; lastLX = e.touches[0].clientX; };
-            document.getElementById('jump-btn').ontouchstart = () => { if(canJump) velocity.y += 20; canJump = false; };
+            
+            joy.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const rect = joy.getBoundingClientRect();
+                const dx = e.touches[0].clientX - (rect.left + 70);
+                const dy = e.touches[0].clientY - (rect.top + 70);
+                const dist = Math.min(Math.sqrt(dx*dx + dy*dy), 50);
+                const angle = Math.atan2(dy, dx);
+                
+                st.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
+                touchM = { x: dx/50, y: dy/50 };
+            }, {passive:false});
+
+            joy.addEventListener('touchend', () => {
+                st.style.transform = 'translate(0,0)';
+                touchM = { x: 0, y: 0 };
+            });
+
+            let lastX;
+            document.getElementById('look-area').addEventListener('touchstart', e => lastX = e.touches[0].clientX);
+            document.getElementById('look-area').addEventListener('touchmove', e => {
+                const delta = e.touches[0].clientX - lastX;
+                camera.rotation.y -= delta * 0.006;
+                lastX = e.touches[0].clientX;
+            }, {passive:false});
+
+            document.getElementById('jump-btn').addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if(canJump) { velocity.y += 20; canJump = false; }
+            });
+        }
+
+        function resetGame() {
+            isGame = true;
+            score = 0;
+            speedMultiplier = 1.0;
+            scoreEl.style.display = 'block';
+            camera.position.set(0, 15, 0);
+            camera.rotation.set(0,0,0);
+            monster.position.set(0, 10, -60);
+            velocity.set(0,0,0);
+            if(!isMob) controls.lock();
         }
 
         function animate() {
             requestAnimationFrame(animate);
+
             if(isGame) {
-                let time = performance.now(), delta = (time - prevTime)/1000;
+                const time = performance.now();
+                const delta = (time - prevTime) / 1000;
                 
-                // SKOR VE HIZ HESAPLAMA
-                score += delta * 10; // Her saniye yaklasik 10 puan
-                scoreLabel.innerText = 'SKOR: ' + Math.floor(score);
-                // Her 500 puanda hiz %10 artar (Ornek: 1 + 500/5000 = 1.1x hiz)
-                speedMultiplier = 1 + (score / 5000);
+                // SKOR ve HIZ
+                score += delta * 15;
+                speedMultiplier = 1 + (score / 3000); // Zamanla hızlan
+                scoreEl.innerText = 'SKOR: ' + Math.floor(score);
 
-                // OYUNCU HAREKETI (Dinamik Hiz ile)
-                let currentPlayerSpeed = BASE_PLAYER_SPEED * speedMultiplier;
-                velocity.x -= velocity.x * 10 * delta; velocity.z -= velocity.z * 10 * delta; velocity.y -= 9.8 * 6 * delta;
-                if(moveF || touchM.y < -0.2) velocity.z -= currentPlayerSpeed * delta; if(moveB || touchM.y > 0.2) velocity.z += currentPlayerSpeed * delta;
-                if(moveL || touchM.x < -0.2) velocity.x -= currentPlayerSpeed * delta; if(moveR || touchM.x > 0.2) velocity.x += currentPlayerSpeed * delta;
-                controls.moveRight(velocity.x * delta); controls.moveForward(-velocity.z * delta); camera.position.y += velocity.y * delta;
+                // FİZİK ve HAREKET
+                velocity.x -= velocity.x * 10 * delta;
+                velocity.z -= velocity.z * 10 * delta;
+                velocity.y -= 9.8 * 6.0 * delta;
+
+                const baseSpeed = 130 * speedMultiplier;
                 
-                // Zemin kontrolu
-                let groundH = (Math.sin(camera.position.x*0.04)*6) + (Math.cos(camera.position.z*0.04)*6);
-                if(camera.position.y < groundH + 4) { velocity.y = 0; camera.position.y = groundH + 4; canJump = true; }
+                if(moveF || touchM.y < -0.2) velocity.z -= baseSpeed * delta;
+                if(moveB || touchM.y > 0.2) velocity.z += baseSpeed * delta;
+                if(moveL || touchM.x < -0.2) velocity.x -= baseSpeed * delta;
+                if(moveR || touchM.x > 0.2) velocity.x += baseSpeed * delta;
 
-                // CANAVAR HAREKETI (Dinamik Hiz ile)
-                monster.lookAt(camera.position.x, monster.position.y, camera.position.z);
-                let mDir = new THREE.Vector3().subVectors(camera.position, monster.position).normalize();
-                let currentMonsterSpeed = BASE_MONSTER_SPEED * speedMultiplier;
-                monster.position.add(mDir.multiplyScalar(currentMonsterSpeed * delta));
-                monster.position.y = (Math.sin(monster.position.x*0.04)*6) + (Math.cos(monster.position.z*0.04)*6) + 2.5;
-                monsterParts.forEach((l, i) => l.rotation.x = Math.sin(time*0.01*speedMultiplier + i) * 0.6); // Animasyon da hizlansin
+                controls.moveRight(velocity.x * delta);
+                controls.moveForward(-velocity.z * delta);
+                camera.position.y += velocity.y * delta;
 
-                // OYUN BITISI
-                if(monster.position.distanceTo(camera.position) < 3.5) { 
-                    isGame = false; 
-                    document.getElementById('game-over-screen').classList.remove('hidden'); 
-                    document.getElementById('final-score').innerText = 'Son Skor: ' + Math.floor(score);
-                    scoreLabel.style.display = 'none';
-                    controls.unlock(); 
+                // ARAZİ ve SONSUZ DÖNGÜ
+                // Eğer oyuncu haritanın sınırına yaklaşırsa (200 birim), merkeze ışınla
+                // Arazi sinüs dalgası (period ~125) olduğu için uyumlu ışınlamalıyız
+                if (Math.abs(camera.position.x) > 250) {
+                    camera.position.x = 0; // Sonsuz döngü hilesi
+                    monster.position.x = 0; // Canavarı da taşı ki kaybolmasın
                 }
+                if (Math.abs(camera.position.z) > 250) {
+                    camera.position.z = 0;
+                    monster.position.z = -50; // Canavarı tekrar arkaya al
+                }
+
+                // Yükseklik Kontrolü
+                const groundH = (Math.sin(camera.position.x*0.05)*5) + (Math.cos(camera.position.z*0.05)*5) + (Math.sin(camera.position.x*0.1 + camera.position.z*0.1)*2);
+                if(camera.position.y < groundH + 5) {
+                    velocity.y = 0;
+                    camera.position.y = groundH + 5;
+                    canJump = true;
+                }
+
+                // CANAVAR AI
+                monster.lookAt(camera.position.x, monster.position.y, camera.position.z);
+                const dir = new THREE.Vector3().subVectors(camera.position, monster.position).normalize();
+                
+                // Canavar hızı oyuncudan %5 yavaş başlar ama çarpanla artar
+                const monsterSpeed = (baseSpeed * 0.95); 
+                monster.position.add(dir.multiplyScalar(monsterSpeed * delta));
+                
+                // Canavarın araziye uyumu
+                const mGround = (Math.sin(monster.position.x*0.05)*5) + (Math.cos(monster.position.z*0.05)*5) + (Math.sin(monster.position.x*0.1 + monster.position.z*0.1)*2);
+                monster.position.y = mGround + 2.5;
+
+                // Animasyon
+                monsterParts.forEach((leg, i) => {
+                    leg.rotation.x = Math.sin(time * 0.015 * speedMultiplier + i) * 0.8;
+                });
+
+                // Oyun Bitti mi?
+                if(camera.position.distanceTo(monster.position) < 4) {
+                    isGame = false;
+                    document.getElementById('game-over-screen').classList.remove('hidden');
+                    document.getElementById('final-score').innerText = "Son Skor: " + Math.floor(score);
+                    scoreEl.style.display = 'none';
+                    controls.unlock();
+                }
+
                 prevTime = time;
-            } else { prevTime = performance.now(); }
+            } else {
+                prevTime = performance.now();
+            }
+
             renderer.render(scene, camera);
         }
+
         init();
     </script>
 </body>
