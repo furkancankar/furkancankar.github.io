@@ -126,10 +126,10 @@
             scene.add(moonLight);
 
             // 3. OYUNCU EL FENERİ (Çok güçlü spot ışık)
-            const flashlight = new THREE.SpotLight(0xffffff, 2.0); // Şiddeti 2.0 (Yüksek)
+            const flashlight = new THREE.SpotLight(0xffffff, 3.0); // Şiddeti 2.0 (Yüksek)
             flashlight.position.set(0, 0, 0);
-            flashlight.distance = 80; // Menzil
-            flashlight.angle = Math.PI / 3; // Genişlik
+            flashlight.distance = 140; // Menzil
+            flashlight.angle = Math.PI / 8; // Genişlik
             flashlight.penumbra = 0.5; // Yumuşak kenarlar
             flashlight.decay = 1;
             
@@ -282,7 +282,7 @@
             camera.rotation.set(0,0,0);
             
             // DÜZELTME: Canavarı daha uzağa yerleştir
-            monster.position.set(0, 10, -100); // Başlangıç mesafesi arttı
+            monster.position.set(0, 50, -100); // Başlangıç mesafesi arttı
             
             velocity.set(0,0,0);
             if(!isMob) controls.lock();
