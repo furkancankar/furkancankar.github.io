@@ -256,7 +256,7 @@
 
                 // OYUNCU HAREKETİ
                 velocity.x -= velocity.x * 10 * delta; velocity.z -= velocity.z * 10 * delta; velocity.y -= 9.8 * 6.0 * delta;
-                const baseSpeed = 130 * speedMultiplier; // Oyuncu hızı
+                const baseSpeed = 50 * speedMultiplier; // Oyuncu hızı
                 
                 if(moveF || touchM.y < -0.2) velocity.z -= baseSpeed * delta;
                 if(moveB || touchM.y > 0.2) velocity.z += baseSpeed * delta;
