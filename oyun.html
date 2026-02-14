@@ -114,7 +114,7 @@
     <script>
         // --- AYARLAR ---
         const PLAYER_SPEED = 140.0; 
-        const MONSTER_SPEED = 10.0; 
+        const MONSTER_SPEED = 30.0; 
         
         // PNG LİNKLERİ
         const ITEM_TEXTURE_URL = "item.png";
@@ -238,7 +238,7 @@
         }
 
         function createCollectibles() {
-            const locations = [{x: 200, z: -40}, {x: -50, z: -80}, {x: 400, z: 100}];
+            const locations = [{x: 200, z: -40}, {x: -50, z: -80}, {x: 100, z: 100}];
             const loader = new THREE.TextureLoader();
             const texture = loader.load(ITEM_TEXTURE_URL, undefined, undefined, () => null);
             const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true, color: 0xffaa00 });
