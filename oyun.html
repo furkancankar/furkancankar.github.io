@@ -39,7 +39,7 @@
         .hidden { display: none !important; }
 
         /* GÖRSELLER */
-        #story-image { width: 50%; height: 50%; max-height: 30vh; object-fit: cover; border: 1px solid #333; margin-bottom: 15px; border-radius: 4px; background: #000; }
+        #story-image { width: 20%; height: 20%; max-height: 30vh; object-fit: cover; border: 1px solid #333; margin-bottom: 15px; border-radius: 4px; background: #000; }
 
         /* ITEM SAYACI */
         #item-hud { 
@@ -238,7 +238,7 @@
         }
 
         function createCollectibles() {
-            const locations = [{x: 40, z: -40}, {x: -50, z: -80}, {x: 60, z: 50}];
+            const locations = [{x: 200, z: -40}, {x: -50, z: -80}, {x: 400, z: 100}];
             const loader = new THREE.TextureLoader();
             const texture = loader.load(ITEM_TEXTURE_URL, undefined, undefined, () => null);
             const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true, color: 0xffaa00 });
