@@ -256,7 +256,7 @@
 
                 // OYUNCU HAREKETİ
                 velocity.x -= velocity.x * 10 * delta; velocity.z -= velocity.z * 10 * delta; velocity.y -= 9.8 * 6.0 * delta;
-                const baseSpeed = 50 * speedMultiplier; // Oyuncu hızı
+                const baseSpeed = 150 * speedMultiplier; // Oyuncu hızı
                 
                 if(moveF || touchM.y < -0.2) velocity.z -= baseSpeed * delta;
                 if(moveB || touchM.y > 0.2) velocity.z += baseSpeed * delta;
@@ -273,7 +273,7 @@
                 
                 // Canavar, oyuncudan her zaman %10 daha yavaş başlar (0.90)
                 // Hız çarpanı arttıkça canavar oyuncuyla eşitlenir ama asla ışık hızına çıkmaz.
-                let monsterSpeed = baseSpeed * 0.90; 
+                let monsterSpeed = baseSpeed * 0.20; 
                 
                 monster.position.add(dir.multiplyScalar(monsterSpeed * delta));
                 monster.position.y = (Math.sin(monster.position.x*0.03)*3) + (Math.cos(monster.position.z*0.03)*3) + 3.5;
