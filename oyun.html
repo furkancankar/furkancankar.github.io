@@ -64,40 +64,40 @@
 <body>
 
     <audio id="bg-music" loop>
-        <source src="MUZIK_LINKINI_BURAYA_YAPISTIR.mp3" type="audio/mpeg">
+        <source src="muzik.mp3" type="audio/mpeg">
     </audio>
 
     <div id="portrait-warning"><h1>TELEFONU CEVİR!</h1><p>Oyun Yatay Mod İçin Uygun</p></div>
     
-    <div id="item-hud">PARÇALAR: <span id="item-count">0</span> / 3</div>
+    <div id="item-hud">Parçalar: <span id="item-count">0</span> / 3</div>
     
     <div id="ui-layer">
         <div id="main-menu" class="screen">
             <h1>!Escape To IBO!</h1>
-            <p style="color:#aaa; font-size: 0.9em;">Karanlıkta seni izliyor...</p>
+            <p style="color:#aaa; font-size: 0.9em;">Seni Kurtaracağım...</p>
             <button id="play-btn">OYNA</button>
             <button class="link-btn" onclick="window.location.href='https://www.google.com'">BAĞLANTIYA GİT</button>
         </div>
 
         <div id="story-screen" class="screen hidden">
-            <img id="story-image" src="FOTOGRAF_LINKINI_BURAYA_YAPISTIR.jpg" alt="Hikaye">
+            <img id="story-image" src="hikaye.png" alt="Hikaye">
             <p style="margin: 10px 0; font-size: 0.9em; color:#ddd;">
-                Köy lanetlendi. 3 kayıp parçayı bul.<br>
-                O arkanda, ama ışık seninle.
+                İboyu eski haline çevirmen için 3 parçayı topla.<br>
+                Dikkatli ol ibo arkanda olacak.
             </p>
             <button id="continue-btn">BAŞLA</button>
         </div>
 
         <div id="game-over-screen" class="screen hidden">
-            <h1 style="color: #f00;">ÖLDÜN</h1>
-            <p>Çok yaklaştın...</p>
+            <h1 style="color: #f00;">Kaybettin</h1>
+            <p>İboya yakalandın ve ibo seni sikti. İbo eski haline asla dönmeyecek.</p>
             <button id="retry-btn">TEKRAR DENE</button>
         </div>
 
         <div id="win-screen" class="screen hidden">
             <h1 style="color: #4f4;">BAŞARDIN!</h1>
-            <p>Lanet bozuldu.</p>
-            <button class="link-btn" onclick="window.location.href='KAZANINCA_GIDILECEK_LINK_BURAYA'">ÇIKIŞ YAP</button>
+            <p>İbo eski haline döndü. artık muzunu ye</p>
+            <button class="link-btn" onclick="window.location.href='KAZANINCA_GIDILECEK_LINK_BURAYA'">ÖDÜL</button>
             <button id="retry-btn-2">TEKRAR OYNA</button>
         </div>
     </div>
@@ -114,7 +114,7 @@
     <script>
         // --- AYARLAR ---
         const PLAYER_SPEED = 140.0; 
-        const MONSTER_SPEED = 5.0; 
+        const MONSTER_SPEED = 8.0; 
         
         // PNG LİNKLERİ
         const ITEM_TEXTURE_URL = "PARCA_PNG_LINKI_BURAYA.png";
@@ -152,7 +152,7 @@
             scene.add(moonLight);
 
             // Zemin
-            const floorGeo = new THREE.PlaneGeometry(800, 800, 100, 100);
+            const floorGeo = new THREE.PlaneGeometry(800, 800, 800, 800);
             floorGeo.rotateX(-Math.PI / 2);
             const pos = floorGeo.attributes.position;
             for(let i=0; i<pos.count; i++) {
