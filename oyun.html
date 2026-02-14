@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Escape to IBO - Final Edition</title>
+    <title>Escape to IBO - Final V2</title>
     <style>
         body { margin: 0; overflow: hidden; font-family: 'Courier New', Courier, monospace; background-color: #050505; user-select: none; -webkit-user-select: none; }
         
@@ -11,45 +11,47 @@
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 100; pointer-events: none; }
         
         .screen { 
-            background: rgba(15, 20, 25, 0.95); 
+            background: rgba(10, 15, 20, 0.96); 
             color: #ddd; 
             padding: 20px; 
-            border-radius: 10px; 
+            border-radius: 12px; 
             text-align: center; 
             pointer-events: auto; 
-            border: 2px solid #555; 
-            max-width: 700px; 
+            border: 1px solid #444; 
+            max-width: 600px; 
             width: 90%; 
-            box-shadow: 0 0 60px rgba(0,0,0,0.8);
+            box-shadow: 0 0 80px rgba(0,0,0,0.9);
             display: flex; flex-direction: column; align-items: center;
+            max-height: 90vh; /* Mobilde taşmayı önler */
+            overflow-y: auto; /* Gerekirse kaydırma çubuğu çıkar */
         }
 
-        h1 { font-size: 3em; margin: 10px 0; color: #d00; text-shadow: 0 0 10px #500; letter-spacing: 5px; }
+        h1 { font-size: 2.5em; margin: 10px 0; color: #c00; text-shadow: 0 0 10px #500; letter-spacing: 3px; }
         
         /* BUTONLAR */
         button { 
-            background: #222; color: #fff; border: 1px solid #666; padding: 12px 40px; 
+            background: #1a1a1a; color: #fff; border: 1px solid #555; padding: 15px 40px; 
             font-size: 1.1em; cursor: pointer; font-family: inherit; font-weight: bold; 
-            margin-top: 15px; transition: 0.2s; width: 80%; max-width: 300px; text-transform: uppercase;
+            margin-top: 15px; transition: 0.2s; width: 100%; max-width: 280px; text-transform: uppercase; border-radius: 4px;
         }
-        button:hover { background: #d00; border-color: #f00; box-shadow: 0 0 15px #d00; }
+        button:hover { background: #b00; border-color: #f00; box-shadow: 0 0 20px #900; }
         
-        /* Link Butonu (Özel Stil) */
-        .link-btn { background: #004488; border-color: #0066cc; }
-        .link-btn:hover { background: #0066cc; box-shadow: 0 0 15px #0066cc; }
+        /* Link Butonu (Mavi) */
+        .link-btn { background: #003366; border-color: #0055aa; margin-bottom: 10px; }
+        .link-btn:hover { background: #0055aa; box-shadow: 0 0 15px #0055aa; }
 
         .hidden { display: none !important; }
 
-        /* HİKAYE GÖRSELİ */
+        /* HİKAYE GÖRSELİ (DÜZELTİLDİ) */
         #story-image {
             width: 100%;
-            max-width: 600px;
-            aspect-ratio: 16/9;
-            background-color: #000;
-            border: 2px solid #333;
-            margin-bottom: 20px;
+            height: auto;
+            max-height: 35vh; /* Mobilde çok yer kaplamasın */
             object-fit: cover;
-            display: block;
+            border: 1px solid #333;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            background: #000;
         }
 
         /* SKOR */
@@ -62,11 +64,11 @@
 
         /* MOBİL KONTROLLER */
         #mobile-controls { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none; z-index: 50; }
-        #joystick-area { position: absolute; bottom: 40px; left: 40px; width: 140px; height: 140px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; pointer-events: auto; border: 2px solid rgba(255, 255, 255, 0.1); }
-        #stick { width: 60px; height: 60px; background: rgba(200, 50, 50, 0.5); border-radius: 50%; position: absolute; top: 40px; left: 40px; box-shadow: 0 0 15px #f00; }
-        #jump-btn { position: absolute; bottom: 60px; right: 40px; width: 100px; height: 100px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 50%; pointer-events: auto; display: flex; justify-content: center; align-items: center; color: #fff; font-weight: bold; font-size: 1.2em; }
+        #joystick-area { position: absolute; bottom: 40px; left: 40px; width: 120px; height: 120px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; pointer-events: auto; border: 2px solid rgba(255, 255, 255, 0.1); }
+        #stick { width: 50px; height: 50px; background: rgba(200, 50, 50, 0.6); border-radius: 50%; position: absolute; top: 35px; left: 35px; box-shadow: 0 0 10px #f00; }
+        #jump-btn { position: absolute; bottom: 50px; right: 30px; width: 90px; height: 90px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 50%; pointer-events: auto; display: flex; justify-content: center; align-items: center; color: #fff; font-weight: bold; font-size: 1em; }
         #jump-btn:active { background: rgba(200, 50, 50, 0.5); }
-        #look-area { position: absolute; top: 0; right: 0; width: 60%; height: 100%; pointer-events: auto; }
+        #look-area { position: absolute; top: 0; right: 0; width: 50%; height: 100%; pointer-events: auto; }
 
         /* UYARI */
         #portrait-warning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #f44; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
@@ -91,12 +93,13 @@
         </div>
 
         <div id="story-screen" class="screen hidden">
-            
+            <img id="story-image" src="FOTOGRAF_LINKINI_BURAYA_YAPISTIR.jpg" alt="Hikaye Yok">
+            <p style="margin: 5px 0; font-size: 0.9em; color:#aaa;">Oyun yükleniyor...</p>
             <button id="continue-btn">BAŞLA</button>
         </div>
 
         <div id="game-over-screen" class="screen hidden">
-            <h1 style="color: #f00;">ÖLDÜN</h1>
+            <h1 style="color: #f00;">YAKALANDIN</h1>
             <h3 id="final-score" style="color:white;"></h3>
             <button id="retry-btn">TEKRAR DENE</button>
         </div>
@@ -113,7 +116,8 @@
 
     <script>
         // --- DEĞİŞKENLER ---
-        let scene, camera, renderer, controls, monster, monsterParts = [];
+        let scene, camera, renderer, controls, monster, monsterBody;
+        let limbJoints = []; // Animasyon için eklemler
         let moveF = false, moveB = false, moveL = false, moveR = false, canJump = false;
         let velocity = new THREE.Vector3(), prevTime = performance.now(), isGame = false;
         let touchM = { x: 0, y: 0 }, isMob = /Android|iPhone|iPad/i.test(navigator.userAgent);
@@ -126,69 +130,57 @@
         // --- BAŞLATMA ---
         function init() {
             scene = new THREE.Scene();
-            // (KOD: 1) AYDINLATMA GÜNCELLEMESİ - Daha aydınlık sis
-            scene.background = new THREE.Color(0x151520); 
-            scene.fog = new THREE.FogExp2(0x101015, 0.012); 
+            
+            // --- AYDINLATMA (EL FENERİ YOK, ORTAM AYDINLIK) ---
+            scene.background = new THREE.Color(0x1a1a25); // Koyu lacivert gökyüzü
+            scene.fog = new THREE.Fog(0x1a1a25, 20, 180); // Görüş mesafesi arttı (Sis 180'de başlıyor)
 
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-            // 1. Ortam Işığı (Artırıldı)
-            const ambient = new THREE.AmbientLight(0x555560, 0.7); 
-            scene.add(ambient);
+            // 1. Hemisphere Light (Gökyüzü ve Yerden gelen genel ışık)
+            // Bu, el fenerine ihtiyaç duymadan her şeyi görünür kılar
+            const hemiLight = new THREE.HemisphereLight( 0xaaaaff, 0x000000, 0.8 ); 
+            scene.add( hemiLight );
 
-            // 2. Ay Işığı
-            const moonLight = new THREE.DirectionalLight(0xaaccff, 0.5);
-            moonLight.position.set(50, 100, 50);
-            scene.add(moonLight);
-
-            // 3. EL FENERİ (KOD: 1 - Düzeltildi)
-            const flashLight = new THREE.SpotLight(0xffffff, 2.5); // Şiddet artırıldı
-            flashLight.angle = Math.PI / 4;
-            flashLight.penumbra = 0.3;
-            flashLight.decay = 1;
-            flashLight.distance = 100;
-            
-            // Feneri ve hedefini kameraya ekliyoruz ki kamera ile dönsün
-            camera.add(flashLight);
-            camera.add(flashLight.target);
-            flashLight.target.position.set(0, 0, -1); // Işık hep ileri baksın
-            scene.add(camera);
+            // 2. Directional Light (Ay Işığı - Gölgeler için)
+            const dirLight = new THREE.DirectionalLight( 0xffffff, 0.4 );
+            dirLight.position.set( 50, 200, 100 );
+            dirLight.castShadow = false; // Performans için gölge kapalı
+            scene.add( dirLight );
 
             // --- ZEMİN ---
-            const floorGeo = new THREE.PlaneGeometry(1000, 1000, 200, 200);
+            const floorGeo = new THREE.PlaneGeometry(1200, 1200, 150, 150);
             floorGeo.rotateX(-Math.PI / 2);
             const pos = floorGeo.attributes.position;
             for(let i=0; i<pos.count; i++) {
                 let x = pos.getX(i);
                 let z = pos.getZ(i);
-                // Araziyi biraz daha düzleştirdik, koşmak kolay olsun
-                let y = (Math.sin(x*0.04)*4) + (Math.cos(z*0.04)*4) + (Math.sin(x*0.1 + z*0.1)*1.5);
+                // Hafif engebeli arazi
+                let y = (Math.sin(x*0.03)*3) + (Math.cos(z*0.03)*3);
                 pos.setY(i, y);
             }
             floorGeo.computeVertexNormals();
             
             const floorMat = new THREE.MeshStandardMaterial({ 
-                color: 0x222a22, 
-                roughness: 0.8,
-                metalness: 0.2
+                color: 0x252a25, 
+                roughness: 0.9,
+                metalness: 0.1
             });
             scene.add(new THREE.Mesh(floorGeo, floorMat));
 
-            // --- CANAVAR ---
-            createAdvancedMonster();
+            // --- GELİŞMİŞ CANAVAR ---
+            createMonster();
 
             renderer = new THREE.WebGLRenderer({antialias: true});
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.physicallyCorrectLights = true; 
+            renderer.physicallyCorrectLights = false; 
             document.body.appendChild(renderer.domElement);
 
             controls = new THREE.PointerLockControls(camera, document.body);
 
-            // --- ETKİLEŞİMLER ---
+            // --- BUTON İŞLEVLERİ ---
             document.getElementById('play-btn').onclick = () => {
-                // Müzik başlatmayı dene
-                if(audio) { audio.volume = 0.6; audio.play().catch(e => console.log("Audio play error:", e)); }
-                
+                if(audio) { audio.volume = 0.5; audio.play().catch(e => console.log("Müzik hatası:", e)); }
                 document.getElementById('main-menu').classList.add('hidden');
                 document.getElementById('story-screen').classList.remove('hidden');
             };
@@ -206,57 +198,75 @@
             animate();
         }
 
-        // --- GELİŞMİŞ CANAVAR MODELİ (KOD: 5) ---
-        function createAdvancedMonster() {
+        // --- GELİŞMİŞ CANAVAR MODELİ VE ANİMASYON ---
+        function createMonster() {
             monster = new THREE.Group();
-            const blackMat = new THREE.MeshStandardMaterial({color: 0x050505, roughness: 0.7});
-            const glowMat = new THREE.MeshBasicMaterial({color: 0xff0000}); // Kırmızı gözler
+            const skinMat = new THREE.MeshStandardMaterial({color: 0x080808, roughness: 0.5, metalness: 0.5}); // Parlak siyah
+            const redGlow = new THREE.MeshBasicMaterial({color: 0xff0000});
 
-            // 1. Gövde (Daha organik durması için 2 parça)
-            const chest = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1, 1.5), blackMat);
-            const abdomen = new THREE.Mesh(new THREE.BoxGeometry(1, 0.8, 1.5), blackMat);
-            abdomen.position.z = 1.4;
-            monster.add(chest);
-            monster.add(abdomen);
+            // 1. Ana Gövde Grubu (Nefes alması için)
+            monsterBody = new THREE.Group();
+            monster.add(monsterBody);
 
-            // 2. Kafa (Korkunç olması için hafif öne eğik)
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.7, 16, 16), blackMat);
-            head.position.set(0, 0.5, -1);
-            monster.add(head);
+            // Göğüs
+            const chest = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.2, 2.0), skinMat);
+            monsterBody.add(chest);
 
-            // Gözler (Parlayan)
-            const eye1 = new THREE.Mesh(new THREE.SphereGeometry(0.1), glowMat);
-            eye1.position.set(-0.25, 0.1, -0.6);
-            head.add(eye1);
-            
-            const eye2 = new THREE.Mesh(new THREE.SphereGeometry(0.1), glowMat);
-            eye2.position.set(0.25, 0.1, -0.6);
-            head.add(eye2);
+            // Kafa
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.8, 16, 16), skinMat);
+            head.position.set(0, 0.8, -1.2);
+            monsterBody.add(head);
 
-            // 3. Uzuvlar (Daha ince ve eklemli gibi görünen parçalar)
-            // 4 Bacak
+            // Gözler
+            const eyeGeom = new THREE.SphereGeometry(0.12);
+            const eye1 = new THREE.Mesh(eyeGeom, redGlow); eye1.position.set(-0.3, 0.2, -0.6); head.add(eye1);
+            const eye2 = new THREE.Mesh(eyeGeom, redGlow); eye2.position.set(0.3, 0.2, -0.6); head.add(eye2);
+
+            // 2. Eklemli Bacaklar (4 Adet)
+            // Yapı: Omuz -> Üst Bacak -> Alt Bacak
             for(let i=0; i<4; i++) {
-                const legGroup = new THREE.Group();
-                // Üst bacak
-                const upperLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.1, 2.5), blackMat);
-                upperLeg.position.y = -1;
-                upperLeg.rotation.z = i%2==0 ? 0.3 : -0.3; // Dışa aç
-                
-                // Alt bacak (sivri)
-                const lowerLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.02, 3), blackMat);
-                lowerLeg.position.y = -3.5;
-                
-                legGroup.add(upperLeg);
-                legGroup.add(lowerLeg);
+                const isLeft = i % 2 !== 0; // Sol taraf mı?
+                const isFront = i < 2;      // Ön taraf mı?
 
-                // Konumlandırma
-                legGroup.position.set(i<2?-0.8:0.8, 0, i%2==0?0.5:1.8);
+                const shoulder = new THREE.Group();
+                // Omuz pozisyonu
+                shoulder.position.set(isLeft ? -0.8 : 0.8, 0, isFront ? -0.5 : 0.8);
+                monsterBody.add(shoulder);
+
+                // Üst Bacak
+                const upperLegGeo = new THREE.BoxGeometry(0.2, 1.5, 0.2);
+                const upperLeg = new THREE.Mesh(upperLegGeo, skinMat);
+                upperLeg.position.y = -0.75; // Pivot noktası üstte kalsın
                 
-                monsterParts.push(legGroup);
-                monster.add(legGroup);
+                const upperLegPivot = new THREE.Group();
+                upperLegPivot.add(upperLeg);
+                // Bacakları biraz yana aç
+                upperLegPivot.rotation.z = isLeft ? 0.5 : -0.5;
+                shoulder.add(upperLegPivot);
+
+                // Alt Bacak
+                const lowerLegGeo = new THREE.BoxGeometry(0.15, 2.0, 0.15);
+                const lowerLeg = new THREE.Mesh(lowerLegGeo, skinMat);
+                lowerLeg.position.y = -1.0;
+                
+                const lowerLegPivot = new THREE.Group();
+                lowerLegPivot.position.y = -1.5; // Üst bacağın altından başla
+                lowerLegPivot.add(lowerLeg);
+                // Diz kırma
+                lowerLegPivot.rotation.x = isFront ? -0.3 : 0.3; 
+                upperLegPivot.add(lowerLegPivot);
+
+                // Animasyon için eklemleri kaydet
+                limbJoints.push({
+                    shoulder: shoulder,
+                    upper: upperLegPivot,
+                    lower: lowerLegPivot,
+                    side: isLeft ? 1 : -1,
+                    index: i
+                });
             }
             
-            monster.position.set(0, -100, 0); // Başlangıçta yerin altında sakla
+            monster.position.set(0, -500, 0); // Başlangıçta görünmesin
             scene.add(monster);
         }
 
@@ -279,8 +289,8 @@
             joy.addEventListener('touchmove', (e) => {
                 e.preventDefault();
                 const rect = joy.getBoundingClientRect();
-                const dx = e.touches[0].clientX - (rect.left + 70);
-                const dy = e.touches[0].clientY - (rect.top + 70);
+                const dx = e.touches[0].clientX - (rect.left + 60);
+                const dy = e.touches[0].clientY - (rect.top + 60);
                 const dist = Math.min(Math.sqrt(dx*dx + dy*dy), 50);
                 const angle = Math.atan2(dy, dx);
                 st.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
@@ -311,8 +321,9 @@
             camera.position.set(0, 10, 0);
             camera.rotation.set(0, 0, 0);
             
-            // CANAVAR KONUMU (KOD: 5 - Uzağa koyma)
-            monster.position.set(0, 10, -120); // Oyuncudan 120 birim uzakta başlar
+            // --- SPAWN FIX ---
+            // Canavar artık çok uzakta başlıyor
+            monster.position.set(0, 8, -150); 
             
             velocity.set(0,0,0);
             if(!isMob) controls.lock();
@@ -325,17 +336,20 @@
                 const time = performance.now();
                 const delta = (time - prevTime) / 1000;
                 
-                // --- MANTIK ---
-                score += delta * 20;
-                speedMultiplier = 1 + (score / 4000); // Yavaşça hızlan
+                // SKOR
+                score += delta * 25;
                 scoreEl.innerText = 'SKOR: ' + Math.floor(score);
+                
+                // HIZLANMA MANTIĞI
+                // Oyun ilerledikçe hız artar
+                speedMultiplier = 1 + (score / 3000); 
 
                 // --- OYUNCU HAREKETİ ---
                 velocity.x -= velocity.x * 10 * delta;
                 velocity.z -= velocity.z * 10 * delta;
-                velocity.y -= 9.8 * 6.0 * delta; // Yerçekimi
+                velocity.y -= 9.8 * 6.0 * delta;
 
-                const baseSpeed = 140 * speedMultiplier;
+                const baseSpeed = 150 * speedMultiplier;
                 
                 if(moveF || touchM.y < -0.2) velocity.z -= baseSpeed * delta;
                 if(moveB || touchM.y > 0.2) velocity.z += baseSpeed * delta;
@@ -346,40 +360,61 @@
                 controls.moveForward(-velocity.z * delta);
                 camera.position.y += velocity.y * delta;
 
-                // Zemin Çarpışması
-                const groundH = (Math.sin(camera.position.x*0.04)*4) + (Math.cos(camera.position.z*0.04)*4) + (Math.sin(camera.position.x*0.1 + camera.position.z*0.1)*1.5);
+                // Zemin Kontrolü
+                const groundH = (Math.sin(camera.position.x*0.03)*3) + (Math.cos(camera.position.z*0.03)*3);
                 if(camera.position.y < groundH + 4) {
                     velocity.y = 0;
                     camera.position.y = groundH + 4;
                     canJump = true;
                 }
 
-                // --- CANAVAR AI ---
+                // --- CANAVAR AI VE ANİMASYON ---
                 monster.lookAt(camera.position.x, monster.position.y, camera.position.z);
                 const dir = new THREE.Vector3().subVectors(camera.position, monster.position).normalize();
                 
-                // Hız Dengesi: Başta yavaş, sonra hızlanır ama seni yakalaması için hata yapman gerekir
-                let monsterSpeed = baseSpeed * (0.8 + (speedMultiplier * 0.1)); 
-                if(monsterSpeed > baseSpeed * 1.1) monsterSpeed = baseSpeed * 1.1; // Çok aşırı hızlanmasın
-
-                monster.position.add(dir.multiplyScalar(monsterSpeed * delta));
+                // MESAFE KONTROLÜ (Doğar doğmaz ölmemek için)
+                let distToPlayer = monster.position.distanceTo(camera.position);
                 
-                // Canavarın Zemin Uyumu
-                const mGround = (Math.sin(monster.position.x*0.04)*4) + (Math.cos(monster.position.z*0.04)*4) + (Math.sin(monster.position.x*0.1 + monster.position.z*0.1)*1.5);
-                monster.position.y = mGround + 3;
+                // Canavar Hızı: 
+                // Eğer çok uzaktaysa (başlangıçta) oyuncudan YAVAŞ gelir.
+                // Yaklaştıkça hızlanır.
+                let chaseFactor = 0.85; // Başlangıçta %15 daha yavaş
+                if(distToPlayer < 40) chaseFactor = 1.05; // Yaklaşınca %5 daha hızlı
+                
+                let currentMonsterSpeed = baseSpeed * chaseFactor;
+                monster.position.add(dir.multiplyScalar(currentMonsterSpeed * delta));
 
-                // Canavar Animasyonu (Korkutucu titreme ve yürüme)
-                monsterParts.forEach((leg, i) => {
-                    const speed = time * 0.015 * speedMultiplier;
-                    leg.rotation.x = Math.sin(speed + (i*1.5)) * 0.8; // Bacakları salla
-                    leg.position.y = Math.sin(speed * 2 + i) * 0.5; // Yukarı aşağı titret
+                // Zemin Uyumu
+                const mGround = (Math.sin(monster.position.x*0.03)*3) + (Math.cos(monster.position.z*0.03)*3);
+                monster.position.y = mGround + 3.5;
+
+                // GELİŞMİŞ ANİMASYON
+                // Vücut titremesi (Nefes alma / Koşma etkisi)
+                monsterBody.position.y = Math.sin(time * 0.015) * 0.2;
+
+                // Bacak Animasyonları
+                const runCycle = time * 0.02 * speedMultiplier; // Koşma hızı
+                
+                limbJoints.forEach((limb) => {
+                    // Omuz ileri geri (z ekseni dönüşü yerine x/y düzlemi simülasyonu)
+                    // Basitlik için rotasyon kullanıyoruz
+                    
+                    // Çapraz bacaklar senkronize hareket eder (Örümcek/Köpek koşusu)
+                    const offset = limb.index % 2 === 0 ? 0 : Math.PI;
+                    
+                    // Üst bacak hareketi (İleri-Geri savurma)
+                    limb.shoulder.rotation.x = Math.sin(runCycle + offset) * 0.6;
+                    
+                    // Alt bacak hareketi (Diz kırma - yere basarken düzleşir, havada kırılır)
+                    // Cos kullanarak faz farkı yaratıyoruz
+                    limb.lower.rotation.x = Math.abs(Math.cos(runCycle + offset)) * -0.8;
                 });
 
                 // --- OYUN BİTİŞİ ---
-                if(camera.position.distanceTo(monster.position) < 4) {
+                if(distToPlayer < 3.5) {
                     isGame = false;
                     document.getElementById('game-over-screen').classList.remove('hidden');
-                    document.getElementById('final-score').innerText = "Son Skor: " + Math.floor(score);
+                    document.getElementById('final-score').innerText = "Skorun: " + Math.floor(score);
                     scoreEl.style.display = 'none';
                     controls.unlock();
                 }
