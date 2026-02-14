@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Escape: The Crawler</title>
+    <title>ibodankacis</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Courier New', Courier, monospace; background-color: #050505; user-select: none; -webkit-user-select: none; }
+        body { margin: 0; overflow: hidden; font-family: 'Courier New', Courier, monospace; background-color: #0a0a10; user-select: none; -webkit-user-select: none; }
         
         /* UI ELEMENTLERİ */
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 100; pointer-events: none; }
         
         .screen { 
-            background: rgba(10, 15, 20, 0.96); 
+            background: rgba(15, 20, 25, 0.95); 
             color: #ddd; 
             padding: 25px; 
             border-radius: 12px; 
             text-align: center; 
             pointer-events: auto; 
-            border: 1px solid #444; 
+            border: 1px solid #555; 
             max-width: 600px; 
             width: 85%; 
-            box-shadow: 0 0 80px rgba(0,0,0,0.9);
+            box-shadow: 0 0 80px rgba(0,0,0,0.8);
             display: flex; flex-direction: column; align-items: center;
         }
 
-        h1 { font-size: 2em; margin: 10px 0; color: #c00; text-shadow: 0 0 10px #500; letter-spacing: 3px; }
+        h1 { font-size: 2em; margin: 10px 0; color: #d00; text-shadow: 0 0 10px #500; letter-spacing: 3px; }
         h2 { color: #4f8; font-size: 1.8em; margin: 5px 0; }
 
         button { 
@@ -67,14 +67,14 @@
         <source src="MUZIK_LINKINI_BURAYA_YAPISTIR.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="portrait-warning"><h1>LUTFEN TELEFONU CEVIRIN</h1><p>Yatay modda oynamalisiniz.</p></div>
+    <div id="portrait-warning"><h1>TELEFONU CEVİR!</h1><p>Oyun Yatay Mod İçin Uygun</p></div>
     
     <div id="item-hud">PARÇALAR: <span id="item-count">0</span> / 3</div>
     
     <div id="ui-layer">
         <div id="main-menu" class="screen">
-            <h1>CRAWLER</h1>
-            <p style="color:#888; font-size: 0.8em;">Karanlıkta seni izliyor...</p>
+            <h1>!Escape To IBO!</h1>
+            <p style="color:#aaa; font-size: 0.9em;">Karanlıkta seni izliyor...</p>
             <button id="play-btn">OYNA</button>
             <button class="link-btn" onclick="window.location.href='https://www.google.com'">BAĞLANTIYA GİT</button>
         </div>
@@ -82,22 +82,21 @@
         <div id="story-screen" class="screen hidden">
             <img id="story-image" src="FOTOGRAF_LINKINI_BURAYA_YAPISTIR.jpg" alt="Hikaye">
             <p style="margin: 10px 0; font-size: 0.9em; color:#ddd;">
-                Köy lanetlendi.<br>
-                Kurtulmak için 3 kayıp parçayı bulman gerek.<br>
-                Ama dikkat et... O çok hızlı değil ama asla durmaz.
+                Köy lanetlendi. 3 kayıp parçayı bul.<br>
+                O arkanda, ama ışık seninle.
             </p>
             <button id="continue-btn">BAŞLA</button>
         </div>
 
         <div id="game-over-screen" class="screen hidden">
             <h1 style="color: #f00;">ÖLDÜN</h1>
-            <p>Parçaları toplayamadan yakalandın.</p>
+            <p>Çok yaklaştın...</p>
             <button id="retry-btn">TEKRAR DENE</button>
         </div>
 
         <div id="win-screen" class="screen hidden">
             <h1 style="color: #4f4;">BAŞARDIN!</h1>
-            <p>Tüm parçaları topladın ve lanetten kaçtın.</p>
+            <p>Lanet bozuldu.</p>
             <button class="link-btn" onclick="window.location.href='KAZANINCA_GIDILECEK_LINK_BURAYA'">ÇIKIŞ YAP</button>
             <button id="retry-btn-2">TEKRAR OYNA</button>
         </div>
@@ -113,12 +112,12 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
 
     <script>
-        // --- AYARLAR VE DEĞİŞKENLER ---
-        const PLAYER_SPEED = 140.0; // Sabit Hız
-        const MONSTER_SPEED = 136.0; // %2-3 daha yavaş (140 * 0.97)
+        // --- AYARLAR ---
+        const PLAYER_SPEED = 140.0; 
+        const MONSTER_SPEED = 136.0; 
         
-        // PNG LİNKLERİ (BURAYA KENDİ LİNKLERİNİ KOY)
-        const ITEM_TEXTURE_URL = "PARCA_PNG_LINKI_BURAYA.png"; // Şeffaf PNG önerilir
+        // PNG LİNKLERİ
+        const ITEM_TEXTURE_URL = "PARCA_PNG_LINKI_BURAYA.png";
 
         let scene, camera, renderer, controls;
         let monster, monsterParts = [];
@@ -136,46 +135,51 @@
         const audio = document.getElementById('bg-music');
 
         function init() {
-            // 1. Sahne Kurulumu
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x050508); // Çok koyu mavi/siyah
-            scene.fog = new THREE.Fog(0x050508, 10, 100); // Sis yakında başlıyor (Gerilim için)
+            // DÜZELTME 1: Aydınlık Arttırıldı (Kasvetli ama görünür)
+            scene.background = new THREE.Color(0x101015); 
+            // Sis uzaklaştırıldı (Daha uzağı görebilmek için)
+            scene.fog = new THREE.Fog(0x101015, 30, 150); 
 
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-            // 2. Işıklandırma (Karanlık Atmosfer)
-            const ambient = new THREE.AmbientLight(0x404040, 0.6); // Hafif ortam ışığı
+            // DÜZELTME 2: Işık Şiddetleri Arttırıldı
+            const ambient = new THREE.AmbientLight(0x606070, 1.2); // Ortam ışığı çok daha güçlü
             scene.add(ambient);
-            const moonLight = new THREE.DirectionalLight(0x9999ff, 0.4); // Soluk ay ışığı
+            
+            const moonLight = new THREE.DirectionalLight(0xaaccff, 0.8); // Ay ışığı belirginleştirildi
             moonLight.position.set(50, 100, 50);
             scene.add(moonLight);
 
-            // 3. Zemin
+            // Zemin
             const floorGeo = new THREE.PlaneGeometry(800, 800, 100, 100);
             floorGeo.rotateX(-Math.PI / 2);
             const pos = floorGeo.attributes.position;
             for(let i=0; i<pos.count; i++) {
                 let x = pos.getX(i), z = pos.getZ(i);
-                pos.setY(i, (Math.sin(x*0.05)*2) + (Math.cos(z*0.05)*2)); // Hafif engebeli
+                pos.setY(i, (Math.sin(x*0.05)*2) + (Math.cos(z*0.05)*2));
             }
             floorGeo.computeVertexNormals();
-            const floorMat = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.9 });
+            const floorMat = new THREE.MeshStandardMaterial({ 
+                color: 0x222225, // Zemin rengi biraz açıldı
+                roughness: 0.8 
+            });
             scene.add(new THREE.Mesh(floorGeo, floorMat));
 
-            // 4. Evler (Daha Sıklaştırılmış)
+            // Evler
             const houseGeo = new THREE.BoxGeometry(8, 10, 8);
-            const houseMat = new THREE.MeshStandardMaterial({color: 0x222});
-            for(let i=0; i<60; i++) { // Sayı artırıldı
+            const houseMat = new THREE.MeshStandardMaterial({color: 0x333333});
+            for(let i=0; i<60; i++) {
                 const house = new THREE.Mesh(houseGeo, houseMat);
                 const x = (Math.random() - 0.5) * 600;
                 const z = (Math.random() - 0.5) * 600;
-                if(Math.abs(x) < 20 && Math.abs(z) < 20) continue; // Başlangıç noktasına koyma
+                if(Math.abs(x) < 30 && Math.abs(z) < 30) continue; 
                 house.position.set(x, 5, z);
                 scene.add(house);
             }
 
-            createMonster(); // Canavarı yarat
-            createCollectibles(); // Eşyaları yarat
+            createMonster();
+            createCollectibles();
 
             renderer = new THREE.WebGLRenderer({antialias: true});
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -183,9 +187,7 @@
 
             controls = new THREE.PointerLockControls(camera, document.body);
 
-            // UI Eventleri
             document.getElementById('play-btn').onclick = () => {
-                // Müzik sesi kısık başlat
                 if(audio) { audio.volume = 0.2; audio.play().catch(e=>{}); }
                 document.getElementById('main-menu').classList.add('hidden');
                 document.getElementById('story-screen').classList.remove('hidden');
@@ -205,89 +207,42 @@
             animate();
         }
 
-        // --- CANAVAR MODELLEME (RESME GÖRE) ---
         function createMonster() {
             monster = new THREE.Group();
-            
-            // Simsiyah Materyal
-            const blackSkin = new THREE.MeshStandardMaterial({color: 0x000000, roughness: 0.2});
+            const blackSkin = new THREE.MeshStandardMaterial({color: 0x050505, roughness: 0.3});
 
-            // 1. Gövde (İnce ve yatay)
-            const torsoGeo = new THREE.CylinderGeometry(0.5, 0.4, 3, 8);
-            torsoGeo.rotateZ(Math.PI / 2); // Yatay çevir
-            const torso = new THREE.Mesh(torsoGeo, blackSkin);
+            // Gövde
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.4, 3, 8), blackSkin);
+            torso.rotation.z = Math.PI / 2;
             monster.add(torso);
 
-            // 2. Kafa (Küçük, yüzsüz)
+            // Kafa
             const head = new THREE.Mesh(new THREE.SphereGeometry(0.6, 16, 16), blackSkin);
-            head.position.set(0, 0.5, 1.8); // Gövdenin önüne
+            head.position.set(0, 0.5, 1.8);
             monster.add(head);
 
-            // 3. Bacaklar (4 adet, çok uzun ve eklemli)
-            // Resimdeki gibi "Crawler" duruşu
-            const legPos = [
-                {x: -0.8, z: 1.0}, // Ön Sol
-                {x: 0.8, z: 1.0},  // Ön Sağ
-                {x: -0.8, z: -1.0}, // Arka Sol
-                {x: 0.8, z: -1.0}   // Arka Sağ
-            ];
-
+            // Bacaklar
+            const legPos = [{x:-0.8,z:1.0}, {x:0.8,z:1.0}, {x:-0.8,z:-1.0}, {x:0.8,z:-1.0}];
             legPos.forEach((pos, i) => {
-                const legGroup = new THREE.Group();
-                legGroup.position.set(pos.x, 0, pos.z);
+                const legG = new THREE.Group(); legG.position.set(pos.x, 0, pos.z);
+                const upL = new THREE.Mesh(new THREE.CylinderGeometry(0.15,0.1,3), blackSkin); upL.position.y = -1.5;
+                const loL = new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.05,3.5), blackSkin); loL.position.y = -1.75;
                 
-                // Üst Bacak (Uzun)
-                const upperGeo = new THREE.CylinderGeometry(0.15, 0.1, 3);
-                const upperLeg = new THREE.Mesh(upperGeo, blackSkin);
-                upperLeg.position.y = -1.5; // Pivot noktası
+                const upP = new THREE.Group(); upP.add(upL);
+                const loP = new THREE.Group(); loP.position.y = -3; loP.add(loL);
                 
-                // Alt Bacak (Daha uzun)
-                const lowerGeo = new THREE.CylinderGeometry(0.1, 0.05, 3.5);
-                const lowerLeg = new THREE.Mesh(lowerGeo, blackSkin);
-                lowerLeg.position.y = -1.75;
-
-                // Hiyerarşi: Grup -> Üst -> Alt
-                const upperPivot = new THREE.Group();
-                upperPivot.add(upperLeg);
-                
-                const lowerPivot = new THREE.Group();
-                lowerPivot.position.y = -3; // Üst bacağın ucu
-                lowerPivot.add(lowerLeg);
-                
-                upperPivot.add(lowerPivot);
-                legGroup.add(upperPivot);
-                monster.add(legGroup);
-
-                // Animasyon için kaydet
-                monsterParts.push({ group: legGroup, upper: upperPivot, lower: lowerPivot, index: i });
+                upP.add(loP); legG.add(upP); monster.add(legG);
+                monsterParts.push({group: legG, upper: upP, lower: loP, index: i});
             });
-
             scene.add(monster);
         }
 
-        // --- TOPLANABİLİR EŞYALAR ---
         function createCollectibles() {
-            // Eşyaların yerleri (Haritaya dağıtılmış)
-            const locations = [
-                {x: 40, z: -40},
-                {x: -50, z: -80},
-                {x: 60, z: 50}
-            ];
-
+            const locations = [{x: 40, z: -40}, {x: -50, z: -80}, {x: 60, z: 50}];
             const loader = new THREE.TextureLoader();
-            // Varsayılan bir texture, sen linki değiştirince o yüklenecek
-            const texture = loader.load(ITEM_TEXTURE_URL, undefined, undefined, () => {
-                // Hata olursa yerine renkli kutu koy (Link boşsa çalışsın diye)
-                return null;
-            });
-
-            const mat = new THREE.MeshBasicMaterial({ 
-                map: texture, 
-                side: THREE.DoubleSide, 
-                transparent: true,
-                color: 0xffaa00 // Resim yüklenmezse altın rengi görünsün
-            });
-            const geo = new THREE.PlaneGeometry(2, 2); // 2D Resim levhası
+            const texture = loader.load(ITEM_TEXTURE_URL, undefined, undefined, () => null);
+            const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true, color: 0xffaa00 });
+            const geo = new THREE.PlaneGeometry(2, 2);
 
             locations.forEach(loc => {
                 const item = new THREE.Mesh(geo, mat);
@@ -338,8 +293,9 @@
             camera.position.set(0, 5, 0); 
             camera.rotation.set(0, 0, 0);
             
-            // Canavar UZAKTA doğar
-            monster.position.set(0, 4, -80);
+            // DÜZELTME 3: Canavar Çok Daha Uzakta Doğuyor (-150 birim)
+            // Eski değer -80 idi, bu yüzden hemen ölüyordun.
+            monster.position.set(0, 4, -150);
             
             velocity.set(0,0,0);
             if(!isMob) controls.lock();
@@ -351,10 +307,9 @@
                 const time = performance.now();
                 const delta = (time - prevTime) / 1000;
                 
-                // 1. OYUNCU HAREKETİ
                 velocity.x -= velocity.x * 10 * delta; 
                 velocity.z -= velocity.z * 10 * delta; 
-                velocity.y -= 9.8 * 5.0 * delta; // Yerçekimi
+                velocity.y -= 9.8 * 5.0 * delta;
 
                 if(moveF || touchM.y < -0.2) velocity.z -= PLAYER_SPEED * delta;
                 if(moveB || touchM.y > 0.2) velocity.z += PLAYER_SPEED * delta;
@@ -365,60 +320,37 @@
                 controls.moveForward(-velocity.z * delta); 
                 camera.position.y += velocity.y * delta;
 
-                // Zemin kontrol
                 const gH = (Math.sin(camera.position.x*0.05)*2) + (Math.cos(camera.position.z*0.05)*2);
                 if(camera.position.y < gH + 3) { velocity.y = 0; camera.position.y = gH + 3; canJump = true; }
 
-                // 2. CANAVAR HAREKETİ (SABİT HIZ)
                 monster.lookAt(camera.position.x, monster.position.y, camera.position.z);
                 const dir = new THREE.Vector3().subVectors(camera.position, monster.position).normalize();
                 
-                // Hızlanma YOK. Sadece sabit hız.
                 monster.position.add(dir.multiplyScalar(MONSTER_SPEED * delta));
-                
-                // Canavar Yükseklik Ayarı
                 const mGH = (Math.sin(monster.position.x*0.05)*2) + (Math.cos(monster.position.z*0.05)*2);
-                monster.position.y = mGH + 3.5; // Biraz havada dursun, bacaklar yere değsin
+                monster.position.y = mGH + 3.5;
 
-                // 3. CANAVAR ANİMASYONU (CRAWLER YÜRÜYÜŞÜ)
-                const walkCycle = time * 0.005; // Yürüme hızı
+                const walkCycle = time * 0.005;
                 monsterParts.forEach(part => {
-                    // Çapraz bacaklar senkronize
                     const offset = (part.index % 2 === 0) ? 0 : Math.PI; 
-                    
-                    // Üst bacak (İleri/Geri)
                     part.upper.rotation.x = Math.sin(walkCycle + offset) * 0.5;
-                    // Alt bacak (Diz kırma efekti)
                     part.lower.rotation.x = Math.abs(Math.cos(walkCycle + offset)) * -0.5 - 0.2;
                 });
-                // Gövde nefes alıyor gibi
                 monster.rotation.z = Math.sin(time * 0.002) * 0.05;
 
-                // 4. EŞYALAR VE TOPLAMA
-                items.forEach((item, index) => {
+                items.forEach((item) => {
                     if(item.visible) {
-                        // Kendi etrafında dönme
                         item.rotation.y += 2 * delta;
-                        
-                        // Mesafe kontrolü
                         if(camera.position.distanceTo(item.position) < 4) {
-                            item.visible = false; // Toplandı
+                            item.visible = false;
                             collectedCount++;
                             countEl.innerText = collectedCount;
-                            
-                            // KAZANMA KONTROLÜ
-                            if(collectedCount >= 3) {
-                                winGame();
-                            }
+                            if(collectedCount >= 3) winGame();
                         }
                     }
                 });
 
-                // 5. YAKALANMA (ÖLÜM)
-                if(camera.position.distanceTo(monster.position) < 3) {
-                    loseGame();
-                }
-
+                if(camera.position.distanceTo(monster.position) < 3) loseGame();
                 prevTime = time;
             } else { prevTime = performance.now(); }
             renderer.render(scene, camera);
