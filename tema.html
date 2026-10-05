@@ -1,1 +1,313 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTÜ Genç TEMA - Origami Etkinliği</title>
+    <style>
+        /* Doğa Temalı Renk Paleti */
+        :root {
+            --primary-green: #2e7d32;
+            --light-green: #a5d6a7;
+            --bg-color: #f1f8e9; /* Çok açık pastel yeşil/krem */
+            --text-color: #333;
+            --accent-brown: #795548; /* Toprak rengi */
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* Başlık ve TEMA Logosu Kısmı */
+        header {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .logo-container img {
+            height: 90px;
+            object-fit: contain;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-style: italic;
+            color: var(--light-green);
+        }
+
+        /* Ana İçerik Alanı */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .leaf-icon {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        /* Origami Seçim Menüsü */
+        .origami-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .origami-selector button {
+            background-color: white;
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .origami-selector button:hover {
+            background-color: var(--light-green);
+            color: var(--primary-green);
+            border-color: var(--light-green);
+        }
+
+        .origami-selector button.active {
+            background-color: var(--primary-green);
+            color: white;
+        }
+
+        /* Origami İçerik Kartları */
+        .origami-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            display: none; /* Varsayılan olarak gizli */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .origami-card.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .origami-card h2 {
+            color: var(--primary-green);
+            margin-top: 0;
+            border-bottom: 2px dashed var(--light-green);
+            padding-bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Görsel Alanı (Senin Dolduracağın Yer) */
+        .origami-image-placeholder {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            background-color: #e8f5e9;
+            border: 3px dashed var(--light-green);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .origami-image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder-text {
+            position: absolute;
+            color: var(--primary-green);
+            font-weight: bold;
+            opacity: 0.6;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Adımlar Kısmı */
+        .steps {
+            width: 100%;
+        }
+
+        .steps h3 {
+            color: var(--accent-brown);
+        }
+
+        .steps ol {
+            padding-left: 20px;
+        }
+
+        .steps li {
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Alt Bilgi */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--primary-green);
+            font-weight: bold;
+            margin-top: 2rem;
+            background-color: white;
+            border-top: 4px solid var(--primary-green);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <!-- TEMA LOGOSU (Şu an resmi siteden çekiyor, dilersen kendi logonu 'src' kısmına ekleyebilirsin) -->
+            <img src="https://www.tema.org.tr/assets/images/logo.png" alt="TEMA Vakfı Logosu">
+        </div>
+        <div>
+            <h1>GTÜ Genç TEMA Origami Etkinliği</h1>
+            <p>Geri Dönüştürülmüş Kağıtlarla Doğaya Hayat Veriyoruz 🍃</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="leaf-icon">🌿 🕊️ 🌲</div>
+
+        <!-- SEÇİM MENÜSÜ -->
+        <div class="origami-selector">
+            <button class="tab-btn active" onclick="showOrigami('turna')">Turna Kuşu</button>
+            <button class="tab-btn" onclick="showOrigami('kelebek')">Kelebek</button>
+            <button class="tab-btn" onclick="showOrigami('kurbaga')">Zıplayan Kurbağa</button>
+            <!-- Yeni bir buton eklemek istersen burayı çoğaltabilirsin -->
+        </div>
+
+        <!-- 1. ORİGAMİ: TURNA KUŞU -->
+        <div id="turna" class="origami-card active">
+            <h2>Turna Kuşu Yapımı</h2>
+            
+            <div class="origami-image-placeholder">
+                <div class="placeholder-text">Turna Kuşu Görseli Buraya Gelecek</div>
+                <!-- 1. GÖRSEL BURAYA EKLE: 'src' içindeki linki kendi görsel linkin/dosya adın ile değiştir -->
+                <img src="" alt="" onerror="this.style.display='none'">
+            </div>
+
+            <div class="steps">
+                <h3>Nasıl Yapılır?</h3>
+                <ol>
+                    <li>Kare kağıdı alın ve köşegenlerinden katlayıp geri açın (X şeklinde bir iz oluşmalı).</li>
+                    <li>Kağıdı ortadan ikiye dik ve yatay olarak katlayıp açın (+ şeklinde iz oluşmalı).</li>
+                    <li>İzleri kullanarak kağıdı küçük bir kare formuna getirin.</li>
+                    <li>Açık uçlar size bakacak şekilde yan köşeleri orta çizgiye doğru katlayın.</li>
+                    <li>Kanatları, boynu ve kuyruğu şekillendirerek turnanızı tamamlayın.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- 2. ORİGAMİ: KELEBEK -->
+        <div id="kelebek" class="origami-card">
+            <h2>Kelebek Yapımı</h2>
+            
+            <div class="origami-image-placeholder">
+                <div class="placeholder-text">Kelebek Görseli Buraya Gelecek</div>
+                <!-- 2. GÖRSEL BURAYA EKLE: 'src' içindeki linki kendi görsel linkin/dosya adın ile değiştir -->
+                <img src="" alt="" onerror="this.style.display='none'">
+            </div>
+
+            <div class="steps">
+                <h3>Nasıl Yapılır?</h3>
+                <ol>
+                    <li>Kare kağıdı tam ortasından ikiye katlayıp açın.</li>
+                    <li>Diğer tarafından da aynı şekilde ikiye katlayıp açın.</li>
+                    <li>Köşelerden üçgen olacak şekilde katlayın ve ana iskeleti oluşturun.</li>
+                    <li>Alt kanatları yukarı doğru kıvırarak kelebek formunu verin.</li>
+                    <li>Ortadan hafifçe sıkarak kanatların hacim kazanmasını sağlayın.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- 3. ORİGAMİ: KURBAĞA -->
+        <div id="kurbaga" class="origami-card">
+            <h2>Zıplayan Kurbağa Yapımı</h2>
+            
+            <div class="origami-image-placeholder">
+                <div class="placeholder-text">Kurbağa Görseli Buraya Gelecek</div>
+                <!-- 3. GÖRSEL BURAYA EKLE: 'src' içindeki linki kendi görsel linkin/dosya adın ile değiştir -->
+                <img src="" alt="" onerror="this.style.display='none'">
+            </div>
+
+            <div class="steps">
+                <h3>Nasıl Yapılır?</h3>
+                <ol>
+                    <li>Dikdörtgen şeklinde bir kağıt kullanın. Üst kare kısmını çarpı şeklinde katlayıp açın.</li>
+                    <li>Oluşan izlerden yararlanarak üst kısmı içe doğru bastırıp üçgen çatıyı kurun.</li>
+                    <li>Üçgenin uçlarını yukarı katlayarak kurbağanın ön bacaklarını yapın.</li>
+                    <li>Alt kısmı yukarı doğru katlayıp arka bacakları oluşturacak şekilde şekillendirin.</li>
+                    <li>Kurbağanın arka kısmından bas-bırak yaparak zıplamasını test edin!</li>
+                </ol>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        Umut Yeşertiyoruz! - GTÜ Genç TEMA
+    </footer>
+
+    <!-- JavaScript (Sekmeler Arası Geçiş İçin) -->
+    <script>
+        function showOrigami(id) {
+            // Tüm içerik kartlarını gizle
+            const cards = document.querySelectorAll('.origami-card');
+            cards.forEach(card => card.classList.remove('active'));
+
+            // Tüm butonların aktiflik durumunu kaldır
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Tıklanan id'ye sahip kartı göster
+            document.getElementById(id).classList.add('active');
+
+            // Tıklanan butonu aktif yap (Hangi butona tıklandığını event üzerinden yakalıyoruz)
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+          </html>
 
