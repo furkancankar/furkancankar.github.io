@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GTÜ Genç TEMA - Origami Etkinliği</title>
+    <title>GTÜ Genç TEMA</title>
     <style>
-        /* Doğa Temalı Renk Paleti */
+        
         :root {
             --primary-green: #2e7d32;
             --light-green: #a5d6a7;
-            --bg-color: #f1f8e9; /* Çok açık pastel yeşil/krem */
+            --bg-color: #f1f8e9; 
             --text-color: #333;
-            --accent-brown: #795548; /* Toprak rengi */
+            --accent-brown: #795548; 
         }
 
         * {
@@ -27,7 +27,7 @@
             line-height: 1.6;
         }
 
-        /* Başlık ve TEMA Logosu Kısmı */
+        
         header {
             background-color: var(--primary-green);
             color: white;
@@ -56,7 +56,7 @@
             color: var(--light-green);
         }
 
-        /* Ana İçerik Alanı */
+        
         .container {
             max-width: 900px;
             margin: 2rem auto;
@@ -70,7 +70,7 @@
             color: var(--primary-green);
         }
 
-        /* Origami Seçim Menüsü */
+        
         .origami-selector {
             display: flex;
             justify-content: center;
@@ -103,13 +103,13 @@
             color: white;
         }
 
-        /* Origami İçerik Kartları */
+    
         .origami-card {
             background: white;
             border-radius: 20px;
             padding: 2.5rem;
             box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            display: none; /* Varsayılan olarak gizli */
+            display: none; 
             animation: fadeIn 0.5s ease-in-out;
         }
 
@@ -128,7 +128,7 @@
             text-align: center;
         }
 
-        /* Görsel Alanı (Senin Dolduracağın Yer) */
+        
         .origami-image-placeholder {
             width: 100%;
             max-width: 500px;
@@ -159,7 +159,7 @@
             padding: 20px;
         }
 
-        /* Adımlar Kısmı */
+        /* FCK */
         .steps {
             width: 100%;
         }
@@ -177,7 +177,7 @@
             font-size: 1.1rem;
         }
 
-        /* Alt Bilgi */
+    
         footer {
             text-align: center;
             padding: 2rem;
@@ -198,34 +198,31 @@
 
     <header>
         <div class="logo-container">
-            <!-- TEMA LOGOSU (Şu an resmi siteden çekiyor, dilersen kendi logonu 'src' kısmına ekleyebilirsin) -->
-            <img src="https://i.ibb.co/v4Wq2MmC/genctemalogo.png" alt="TEMA Vakfı Logosu">
+            <!-- FCK -->
+            
         </div>
         <div>
+            <img src="https://i.ibb.co/v4Wq2MmC/genctemalogo.png" alt="TEMA Vakfı Logosu">
             <h1>GTÜ Genç TEMA Tanışma Toplantısı</h1>
             <p>Geri Dönüştürülmüş Kağıtlarla Doğaya Hayat Veriyoruz 🍃</p>
-            <a class="tab-btn" href="google.com">WhatsApp</a>
+            <button class="tab-btn" href="google.com">WhatsApp</button>
         </div>
     </header>
 
     <div class="container">
         <div class="leaf-icon">🌿 🕊️ 🌲</div>
 
-        <!-- SEÇİM MENÜSÜ -->
         <div class="origami-selector">
             <button class="tab-btn active" onclick="showOrigami('turna')">Turna Kuşu</button>
             <button class="tab-btn" onclick="showOrigami('kelebek')">Kelebek</button>
             <button class="tab-btn" onclick="showOrigami('kurbaga')">Zıplayan Kurbağa</button>
-            <!-- Yeni bir buton eklemek istersen burayı çoğaltabilirsin -->
-        </div>
+            </div>
 
-        <!-- 1. ORİGAMİ: TURNA KUŞU -->
         <div id="turna" class="origami-card active">
             <h2>Turna Kuşu Yapımı</h2>
             
             <div class="origami-image-placeholder">
                 <div class="placeholder-text">Turna Kuşu Görseli Buraya Gelecek</div>
-                <!-- 1. GÖRSEL BURAYA EKLE: 'src' içindeki linki kendi görsel linkin/dosya adın ile değiştir -->
                 <img src="" alt="" onerror="this.style.display='none'">
             </div>
 
@@ -241,13 +238,11 @@
             </div>
         </div>
 
-        <!-- 2. ORİGAMİ: KELEBEK -->
         <div id="kelebek" class="origami-card">
             <h2>Kelebek Yapımı</h2>
             
             <div class="origami-image-placeholder">
                 <div class="placeholder-text">Kelebek Görseli Buraya Gelecek</div>
-                <!-- 2. GÖRSEL BURAYA EKLE: 'src' içindeki linki kendi görsel linkin/dosya adın ile değiştir -->
                 <img src="" alt="" onerror="this.style.display='none'">
             </div>
 
@@ -263,13 +258,11 @@
             </div>
         </div>
 
-        <!-- 3. ORİGAMİ: KURBAĞA -->
         <div id="kurbaga" class="origami-card">
             <h2>Zıplayan Kurbağa Yapımı</h2>
             
             <div class="origami-image-placeholder">
                 <div class="placeholder-text">Kurbağa Görseli Buraya Gelecek</div>
-                <!-- 3. GÖRSEL BURAYA EKLE: 'src' içindeki linki kendi görsel linkin/dosya adın ile değiştir -->
                 <img src="" alt="" onerror="this.style.display='none'">
             </div>
 
@@ -288,24 +281,19 @@
     </div>
 
     <footer>
-        Umut Yeşertiyoruz! - GTÜ Genç TEMA
+        GTÜ Genç TEMA
     </footer>
 
-    <!-- JavaScript (Sekmeler Arası Geçiş İçin) -->
     <script>
         function showOrigami(id) {
-            // Tüm içerik kartlarını gizle
             const cards = document.querySelectorAll('.origami-card');
             cards.forEach(card => card.classList.remove('active'));
 
-            // Tüm butonların aktiflik durumunu kaldır
             const buttons = document.querySelectorAll('.tab-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
 
-            // Tıklanan id'ye sahip kartı göster
             document.getElementById(id).classList.add('active');
 
-            // Tıklanan butonu aktif yap (Hangi butona tıklandığını event üzerinden yakalıyoruz)
             event.currentTarget.classList.add('active');
         }
     </script>
