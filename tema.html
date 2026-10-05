@@ -192,6 +192,43 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        a.btn-link {
+    display: inline-block; 
+    text-decoration: none; 
+    background-color: white;
+    border: 2px solid var(--primary-green);
+    color: var(--primary-green);
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+
+a.btn-link:hover {
+    background-color: var(--light-green);
+    color: var(--primary-green);
+    border-color: var(--light-green);
+}
+        
+.yan-yana-baslik {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    gap: 15px; 
+    margin: 0;
+    font-size: 2rem;
+}
+
+
+.kucuk-logo {
+    height: 50px; 
+    object-fit: contain;
+}
+        
     </style>
 </head>
 <body>
@@ -201,11 +238,13 @@
             <!-- FCK -->
             
     
-        <div>
-           <div class="logo-container"> <img src="https://i.ibb.co/v4Wq2MmC/genctemalogo.png" alt="TEMA Vakfı Logosu"></div>
-            <h1>GTÜ Genç TEMA Tanışma Toplantısı</h1>
+        
+           <div class="logo-container"> </div>
+           <div> <h1 class="yan-yana-baslik">
+               <img class="kucuk-logo" src="https://i.ibb.co/v4Wq2MmC/genctemalogo.png" alt="TEMA Vakfı Logosu">
+               GTÜ Genç TEMA Tanışma Toplantısı</h1>
             <p>Geri Dönüştürülmüş Kağıtlarla Doğaya Hayat Veriyoruz 🍃</p>
-            <button class="tab-btn" href="google.com">WhatsApp</button>
+            <a class="tab-btn" href="">WhatsApp</a>
         </div>
     </header>
 
